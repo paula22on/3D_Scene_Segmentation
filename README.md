@@ -34,7 +34,7 @@ xxx
 
 ## Dataset
 
-The dataset used in the experiments includes 3D scans from Matterport scanners in 6 areas, comprising 271 rooms, known as the Stanford 3D semantic parsing datase
+The dataset used in the experiments includes a large-scale aerial LiDAR dataset with over a 500M hand-labeled points spanning 10 km2 of area and eight object categories, known as DALES.
 
 ## Training
 
