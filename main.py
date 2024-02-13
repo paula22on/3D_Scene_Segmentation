@@ -3,13 +3,11 @@ import os
 import matplotlib.pyplot as plt
 import numpy as np
 import torch
-import torch.nn as nn
 import torch.optim as optim
 import tqdm
 from torch.utils.data import DataLoader
 
 from dataset import MyDataset  # TODO MODIFY IMPORT OF DATA
-from model import MyModel  # TODO: MODIFY IMPORT OF MODEL
 from model import ClassificationPointNet, SegmentationPointNet
 from utils import compute_accuracy
 
