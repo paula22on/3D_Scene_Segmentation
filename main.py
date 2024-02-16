@@ -12,10 +12,14 @@ from model import ClassificationPointNet, SegmentationPointNet
 from utils import compute_accuracy
 
 SEGMENTATION = True
+NUM_POINTS = 2048
 
 device = torch.device("cuda") if torch.cuda.is_available() else torch.device("cpu")
 
-mydataset = MyDataset()  # TODO: MODIFY THIS
+train_dataset = MyDataset("data", NUM_POINTS, "train")
+test_dataset  = MyDataset("data", NUM_POINTS, "test")
+train_dataset, val_dataset = torch.utils.data.random_split(train_dataset, [2300, 600])
+
 train_dataloader, valid_dataloader, test_dataloader = DataLoader()  # TODO: MODIFY THIS
 
 if SEGMENTATION:
