@@ -32,16 +32,17 @@ def import_dataset(split = "train"):
 #Loading time...2m
 train_dataset = import_dataset()
 test_dataset = import_dataset(split = "test")
-#---- All above code works! Currently testing...
+
 train_dataset = MyDataset(train_dataset, NUM_POINTS, "train")
 test_dataset = MyDataset(test_dataset, NUM_POINTS, "test")
 train_dataset, val_dataset = torch.utils.data.random_split(train_dataset, [2300, 600])
+
 
 train_dataloader = DataLoader(train_dataset, batch_size=32, shuffle=True, num_workers=4)
 val_dataloader = DataLoader(val_dataset, batch_size=32, shuffle=False, num_workers=4)
 test_dataloader = DataLoader(test_dataset, batch_size=32, shuffle=False, num_workers=4)
 
-
+#---- All above code works! Currently testing...
 if SEGMENTATION:
     model = SegmentationPointNet(num_classes=6, point_dimension=3)
 else:
