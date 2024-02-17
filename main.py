@@ -28,7 +28,7 @@ test_dataloader = DataLoader(test_dataset, batch_size=32, shuffle=False, num_wor
 if SEGMENTATION:
     model = SegmentationPointNet(num_classes=6, point_dimension=3)
 else:
-    model = ClassificationPointNet(num_classes=16, point_dimension=3)
+    model = ClassificationPointNet(num_classes=16, point_dimension=3, segmentation = False)
 
 
 criterion = torch.nn.NLLLoss()
