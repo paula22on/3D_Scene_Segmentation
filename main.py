@@ -140,9 +140,7 @@ epoch_test_acc = []
 with torch.no_grad():
     for points, labels in test_dataloader:
         points, labels = points.to(device), labels.to(device)
-        pred, _ = model(
-            points, segmentation=SEGMENTATION
-        )  #! TEST IF THIS WAY OF CALLING THE FORWARD WORKSS
+        pred, _ = model(points)
         labels = labels - 1
         loss = criterion(pred.view(-1, 6), labels.view(-1))
         epoch_test_loss.append(loss.item())
