@@ -62,9 +62,7 @@ for epoch in tqdm(range(epochs)):
         optimizer.zero_grad()
 
         # Forward pass
-        pred, _ = model(
-            points, segmentation=SEGMENTATION
-        )  #! TEST IF THIS WAY OF CALLING THE FORWARD WORKS
+        pred, _ = model(points)
 
         labels = labels - 1
         loss = criterion(pred.view(-1, 6), labels.view(-1))
