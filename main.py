@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import torch
 import torch.optim as optim
-import tqdm
+from tqdm import tqdm
 from torch.utils.data import DataLoader
 
 from dataset import MyDataset
@@ -42,7 +42,7 @@ train_dataloader = DataLoader(train_dataset, batch_size=32, shuffle=True, num_wo
 val_dataloader = DataLoader(val_dataset, batch_size=32, shuffle=False, num_workers=4)
 test_dataloader = DataLoader(test_dataset, batch_size=32, shuffle=False, num_workers=4)
 
-#---- All above code works! Currently testing...
+
 if SEGMENTATION:
     model = SegmentationPointNet(num_classes=6, point_dimension=3)
 else:
@@ -56,7 +56,7 @@ checkpoint_dir = "checkpoints-segmentation"
 if not os.path.exists(checkpoint_dir):
     os.makedirs(checkpoint_dir)
 
-
+#---- All above code works! Currently testing...
 # Training and Evaluation Loop
 epochs = 80
 train_loss = []
