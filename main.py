@@ -7,7 +7,7 @@ import torch.optim as optim
 import tqdm
 from torch.utils.data import DataLoader
 
-from dataset import MyDataset  # TODO MODIFY IMPORT OF DATA
+from dataset import MyDataset
 from model import ClassificationPointNet, SegmentationPointNet
 from utils import compute_accuracy
 
@@ -17,15 +17,16 @@ NUM_POINTS = 2048
 device = torch.device("cuda") if torch.cuda.is_available() else torch.device("cpu")
 
 train_dataset = MyDataset("data", NUM_POINTS, "train")
-test_dataset  = MyDataset("data", NUM_POINTS, "test")
+test_dataset = MyDataset("data", NUM_POINTS, "test")
 train_dataset, val_dataset = torch.utils.data.random_split(train_dataset, [2300, 600])
 
-train_dataloader, valid_dataloader, test_dataloader = DataLoader()  # TODO: MODIFY THIS
+train_dataloader = DataLoader(train_dataset, batch_size=32, shuffle=True, num_workers=4)
+val_dataloader = DataLoader(val_dataset, batch_size=32, shuffle=False, num_workers=4)
+test_dataloader = DataLoader(test_dataset, batch_size=32, shuffle=False, num_workers=4)
+
 
 if SEGMENTATION:
-    model = SegmentationPointNet(
-        num_classes=6, point_dimension=3
-    )  # TODO: MODIFY MODEL NAME TO HAVE CLASSIFICATION OR SEGMENTATION
+    model = SegmentationPointNet(num_classes=6, point_dimension=3)
 else:
     model = ClassificationPointNet(num_classes=16, point_dimension=3)
 
@@ -41,8 +42,10 @@ if not os.path.exists(checkpoint_dir):
 # Training and Evaluation Loop
 epochs = 80
 train_loss = []
+val_loss = []
 test_loss = []
 train_acc = []
+val_acc = []
 test_acc = []
 best_loss = np.inf
 
@@ -79,13 +82,12 @@ for epoch in tqdm(range(epochs)):
             f"Training - Epoch {epoch}, Batch {i}: Train Loss: {loss.item()}, Train Acc: {acc}"
         )
 
-    model.eval()
-    epoch_test_loss = []
-    epoch_test_acc = []
+    epoch_val_loss = []
+    epoch_val_acc = []
 
     # Validation Loop
     with torch.no_grad():
-        for data in valid_dataloader:
+        for data in val_dataloader:
             points, labels = data
             points, labels = points.to(device), labels.to(device)
             pred, _ = model(
@@ -93,24 +95,24 @@ for epoch in tqdm(range(epochs)):
             )  #! TEST IF THIS WAY OF CALLING THE FORWARD WORKSS
             labels = labels - 1
             loss = criterion(pred.view(-1, 6), labels.view(-1))
-            epoch_test_loss.append(loss.item())
+            epoch_val_loss.append(loss.item())
 
             acc = compute_accuracy(pred, labels)
-            epoch_test_acc.append(acc)
+            epoch_val_acc.append(acc)
 
         print(
             "Epoch %s: train loss: %s, val loss: %f, train accuracy: %s,  val accuracy: %f"
             % (
                 epoch,
                 round(np.mean(epoch_train_loss), 4),
-                round(np.mean(epoch_test_loss), 4),
+                round(np.mean(epoch_val_loss), 4),
                 round(np.mean(epoch_train_acc), 4),
-                round(np.mean(epoch_test_acc), 4),
+                round(np.mean(epoch_val_acc), 4),
             )
         )
 
     # Checkpoint Saving
-    avg_test_loss = np.mean(epoch_test_loss)
+    avg_test_loss = np.mean(epoch_val_loss)
     if avg_test_loss < best_loss:
         best_loss = avg_test_loss
         state = {"model": model.state_dict(), "optimizer": optimizer.state_dict()}
@@ -121,16 +123,47 @@ for epoch in tqdm(range(epochs)):
 
     # Logging
     train_loss.append(np.mean(epoch_train_loss))
-    test_loss.append(np.mean(epoch_test_loss))
+    val_loss.append(np.mean(epoch_val_loss))
     train_acc.append(np.mean(epoch_train_acc))
-    test_acc.append(np.mean(epoch_test_acc))
+    val_acc.append(np.mean(epoch_val_acc))
 
     print(
         f"Epoch {epoch}: Train Loss: {train_loss[-1]}, "
-        f"Test Loss: {test_loss[-1]}, "
+        f"Val Loss: {val_loss[-1]}, "
         f"Train Acc: {train_acc[-1]}, "
-        f"Test Acc: {test_acc[-1]}"
+        f"Val Acc: {val_acc[-1]}"
     )
+
+# Testing loop
+model.eval()
+epoch_test_loss = []
+epoch_test_acc = []
+
+with torch.no_grad():
+    for points, labels in test_dataloader:
+        points, labels = points.to(device), labels.to(device)
+        pred, _ = model(
+            points, segmentation=SEGMENTATION
+        )  #! TEST IF THIS WAY OF CALLING THE FORWARD WORKSS
+        labels = labels - 1
+        loss = criterion(pred.view(-1, 6), labels.view(-1))
+        epoch_test_loss.append(loss.item())
+
+        acc = compute_accuracy(pred, labels)
+        epoch_test_acc.append(acc)
+
+# After completing the loop over the test_dataloader
+average_test_loss = sum(epoch_test_loss) / len(epoch_test_loss)
+average_test_accuracy = sum(epoch_test_acc) / len(epoch_test_acc)
+
+# Print the results
+print(
+    f"Test Results - Loss: {average_test_loss:.4f}, Accuracy: {average_test_accuracy:.2f}%"
+)
+
+# Logging for testing
+test_loss.append(np.mean(epoch_test_loss))
+test_acc.append(np.mean(epoch_val_acc))
 
 # Plotting the results
 

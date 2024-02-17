@@ -66,7 +66,9 @@ class BasePointNet(nn.Module):
         self.bn_4 = nn.BatchNorm1d(128)
         self.bn_5 = nn.BatchNorm1d(256)
 
-    def forward(self, x, plot=False, segmentation=True):
+    def forward(
+        self, x, plot=False, segmentation=True
+    ):  #! CHECK IF THIS IS CORRECT, HOW DO WE PASS THIS TRUE VALUE?
 
         if segmentation:
             x = x.transpose(2, 1)

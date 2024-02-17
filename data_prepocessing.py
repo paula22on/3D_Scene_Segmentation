@@ -1,8 +1,10 @@
-import os
-import laspy
 import argparse
+import os
+
+import laspy
 
 index = 0
+
 
 def exportSubsamples(idx, sample_type, divider, subsamples):
     outdir = f"data/{sample_type}"
@@ -22,6 +24,7 @@ def exportSubsamples(idx, sample_type, divider, subsamples):
                     csv_file.write(f"{X},{Y},{Z},{label}\n")
             nsub += 1
 
+
 def subsample(divider, X, Y, Z, labels):
     alldivisions = []
     for i in range(divider):
@@ -30,12 +33,12 @@ def subsample(divider, X, Y, Z, labels):
             row.append([])
         alldivisions.append(row)
 
-    areaX = max(X)//divider
-    areaY = max(Y)//divider
+    areaX = max(X) // divider
+    areaY = max(Y) // divider
 
     for i in range(len(labels)):
-        xidx = min(X[i]//areaX, divider-1)
-        yidx = min(Y[i]//areaY, divider-1)
+        xidx = min(X[i] // areaX, divider - 1)
+        yidx = min(Y[i] // areaY, divider - 1)
         alldivisions[xidx][yidx].append((X[i], Y[i], Z[i], labels[i]))
 
         if (i + 1) % (len(labels) // 100) == 0:
@@ -43,8 +46,10 @@ def subsample(divider, X, Y, Z, labels):
 
     return alldivisions
 
+
 def normalize(las_x, las_y):
     return las_x - min(las_x), las_y - min(las_y)
+
 
 def simplify(las):
     X = las.X
@@ -61,6 +66,7 @@ def simplify(las):
 
     return X, Y, Z, labels
 
+
 def process(path, sample, idx, sample_type, divider):
     print(f"Starting processing of {sample_type} sample {sample}")
     las = laspy.read(f"{path}/{sample}")
@@ -69,21 +75,25 @@ def process(path, sample, idx, sample_type, divider):
     subdivisions = subsample(divider, X, Y, Z, labels)
     exportSubsamples(idx, sample_type, divider, subdivisions)
 
+
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Description of your script")
-    parser.add_argument("dir_path", type=str, help="Path to the directory containing DALES dataset in .las format")
+    parser.add_argument(
+        "dir_path",
+        type=str,
+        help="Path to the directory containing DALES dataset in .las format",
+    )
     parser.add_argument("divider", type=int, help="Divider used for subsampling")
     args = parser.parse_args()
 
     train_path = f"{args.dir_path}/train"
-    test_path  = f"{args.dir_path}/test"
+    test_path = f"{args.dir_path}/test"
 
     train_samples = os.listdir(train_path)
-    test_samples  = os.listdir(test_path)
+    test_samples = os.listdir(test_path)
 
     for i, sample in enumerate(train_samples):
         process(train_path, sample, i, "train", args.divider)
 
     for i, sample in enumerate(test_samples):
         process(test_path, sample, i, "test", args.divider)
-

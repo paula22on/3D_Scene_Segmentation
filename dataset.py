@@ -1,10 +1,12 @@
+import os
+
 import pandas as pd
 import torch
-import os
 from torch.utils.data import Dataset
 
+
 class MyDataset(Dataset):
-    def __init__(self, samples_path, number_points, split = "train"):
+    def __init__(self, samples_path, number_points, split="train"):
         super().__init__()
         self.samples_path = samples_path + "/" + split
         self.number_points = number_points
@@ -12,11 +14,13 @@ class MyDataset(Dataset):
 
     def __len__(self):
         # Count the number of samples (csv files) present in the directory
-        num_csv_files = sum(1 for file in os.listdir(self.samples_path) if file.endswith('.csv'))
+        num_csv_files = sum(
+            1 for file in os.listdir(self.samples_path) if file.endswith(".csv")
+        )
         return num_csv_files
-    
+
     def __getitem__(self, idx):
-        
+
         if idx >= self.__len__():
             raise IndexError("Trying to access sample beyond dataset length")
 
@@ -32,8 +36,7 @@ class MyDataset(Dataset):
         labels = sample_reduced.iloc[:, 3]
 
         # Create tensor for the sample and its labels
-        sample = torch.tensor(sample.values) # tensor of 3 x n_points
-        labels = torch.tensor(labels.values) # tensor of n_points
+        sample = torch.tensor(sample.values)  # tensor of 3 x n_points
+        labels = torch.tensor(labels.values)  # tensor of n_points
 
         return sample, labels
-    
