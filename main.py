@@ -15,8 +15,6 @@ from utils import compute_accuracy
 SEGMENTATION = True
 NUM_POINTS = 2048
 
-device = torch.device("cuda") if torch.cuda.is_available() else torch.device("cpu")
-
 def import_dataset(split = "train"):
     dataset = []
     path = "data/" + split + '/'
@@ -48,6 +46,11 @@ if SEGMENTATION:
 else:
     model = ClassificationPointNet(num_classes=16, point_dimension=3, segmentation = False)
 
+if torch.cuda.is_available():
+    model.cuda()
+    device = 'cuda'
+else:
+    device = 'cpu'
 
 criterion = torch.nn.NLLLoss()
 optimizer = optim.Adam(model.parameters(), lr=0.001)
@@ -106,9 +109,7 @@ for epoch in tqdm(range(epochs)):
         for data in val_dataloader:
             points, labels = data
             points, labels = points.to(device), labels.to(device)
-            pred, _ = model(
-                points, segmentation=SEGMENTATION
-            )  #! TEST IF THIS WAY OF CALLING THE FORWARD WORKSS
+            pred, _ = model(points)
             labels = labels - 1
             loss = criterion(pred.view(-1, 6), labels.view(-1))
             epoch_val_loss.append(loss.item())
