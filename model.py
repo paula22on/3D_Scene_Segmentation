@@ -47,8 +47,11 @@ class TransformationNet(nn.Module):
 
 
 class BasePointNet(nn.Module):
-    def __init__(self, point_dimension):
+    def __init__(self, point_dimension, segmentation = True):
         super(BasePointNet, self).__init__()
+
+        self.segmentation = segmentation
+
         self.input_transform = TransformationNet(
             input_dim=point_dimension, output_dim=point_dimension
         )
@@ -66,9 +69,9 @@ class BasePointNet(nn.Module):
         self.bn_4 = nn.BatchNorm1d(128)
         self.bn_5 = nn.BatchNorm1d(256)
 
-    def forward(
-        self, x, plot=False, segmentation=True
-    ):  #! CHECK IF THIS IS CORRECT, HOW DO WE PASS THIS TRUE VALUE?
+    def forward(self, x): 
+        
+        segmentation = self.segmentation
 
         if segmentation:
             x = x.transpose(2, 1)
