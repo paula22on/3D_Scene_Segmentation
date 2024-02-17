@@ -1,5 +1,5 @@
 import os
-
+import csv
 import matplotlib.pyplot as plt
 import numpy as np
 import torch
@@ -16,8 +16,24 @@ NUM_POINTS = 2048
 
 device = torch.device("cuda") if torch.cuda.is_available() else torch.device("cpu")
 
-train_dataset = MyDataset("data", NUM_POINTS, "train")
-test_dataset = MyDataset("data", NUM_POINTS, "test")
+def import_dataset(split = "train"):
+    dataset = []
+    path = "data/" + split + '/'
+    tiles = os.listdir(path)
+    for tile in tiles:
+        samples = os.listdir(path + tile + '/')
+        print("Loading currently tile: " + tile)
+        for x in samples:
+            item = pd.read_csv(path + tile + '/' + x, dtype=int)
+            dataset.append(item)
+    return dataset
+
+#Loading time...2m
+train_dataset = import_dataset()
+test_dataset = import_dataset(split = "test")
+#---- All above code works! Currently testing...
+train_dataset = MyDataset(train_dataset, NUM_POINTS, "train")
+test_dataset = MyDataset(test_dataset, NUM_POINTS, "test")
 train_dataset, val_dataset = torch.utils.data.random_split(train_dataset, [2300, 600])
 
 train_dataloader = DataLoader(train_dataset, batch_size=32, shuffle=True, num_workers=4)
