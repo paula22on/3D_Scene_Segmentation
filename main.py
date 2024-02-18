@@ -179,15 +179,15 @@ print(
 )
 
 # Logging for testing
-test_loss.append(np.mean(epoch_test_loss))
-test_acc.append(np.mean(epoch_val_acc))
+val_loss.append(np.mean(epoch_test_loss))
+val_acc.append(np.mean(epoch_test_acc))
 
 # Plotting the results
 
 plt.figure(figsize=(12, 6))
 plt.subplot(1, 2, 1)
 plt.plot(train_loss, label="Train Loss")
-plt.plot(test_loss, label="Test Loss")
+plt.plot(val_loss, label="Test Loss")
 plt.title("Loss over Epochs")
 plt.xlabel("Epoch")
 plt.ylabel("Loss")
@@ -195,7 +195,7 @@ plt.legend()
 
 plt.subplot(1, 2, 2)
 plt.plot(train_acc, label="Train Accuracy")
-plt.plot(test_acc, label="Test Accuracy")
+plt.plot(val_acc, label="Test Accuracy")
 plt.title("Accuracy over Epochs")
 plt.xlabel("Epoch")
 plt.ylabel("Accuracy")
