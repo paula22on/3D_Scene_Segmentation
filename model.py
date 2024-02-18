@@ -147,12 +147,12 @@ class SegmentationPointNet(nn.Module):
         # Layers after concatenating global features with per-point features
         self.conv_1 = nn.Conv1d(256 + 64, 256, 1)
         self.conv_2 = nn.Conv1d(256, 128, 1)
-        self.conv_3 = nn.Conv1d(128, 6, 1)
+        self.conv_3 = nn.Conv1d(128, num_classes, 1)
 
         self.bn_1 = nn.BatchNorm1d(256)
         self.bn_2 = nn.BatchNorm1d(128)
 
-        self.bn_3 = nn.BatchNorm1d(6)
+        self.bn_3 = nn.BatchNorm1d(num_classes)
 
         self.logsoftmax = nn.LogSoftmax(dim=1)
 
