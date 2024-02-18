@@ -62,7 +62,7 @@ if not os.path.exists(checkpoint_dir):
 
 #---- All above code works! Currently testing...
 # Training and Evaluation Loop
-epochs = 5
+epochs = 15
 train_loss = []
 val_loss = []
 test_loss = []
@@ -88,7 +88,7 @@ for epoch in tqdm(range(epochs)):
         # Forward pass
         pred, _ = model(points)
 
-        loss = criterion(pred.view(-1, NUM_CLASSES), labels.view(-1))
+        loss = criterion(pred, labels)
         epoch_train_loss.append(loss.item())
 
         # Accuracy Calculation for Segmentation
@@ -113,7 +113,7 @@ for epoch in tqdm(range(epochs)):
             points, labels = points.float(), labels.long()
             points, labels = points.to(device), labels.to(device)
             pred, _ = model(points)
-            loss = criterion(pred.view(-1, NUM_CLASSES), labels.view(-1))
+            loss = criterion(pred, labels)
             epoch_val_loss.append(loss.item())
 
             acc = compute_accuracy(pred, labels)
@@ -163,7 +163,7 @@ with torch.no_grad():
         points, labels = points.float(), labels.long()
         points, labels = points.to(device), labels.to(device)
         pred, _ = model(points)
-        loss = criterion(pred.view(-1, NUM_CLASSES), labels.view(-1))
+        loss = criterion(pred, labels)
         epoch_test_loss.append(loss.item())
 
         acc = compute_accuracy(pred, labels)
@@ -179,8 +179,8 @@ print(
 )
 
 # Logging for testing
-val_loss.append(np.mean(epoch_test_loss))
-val_acc.append(np.mean(epoch_test_acc))
+test_loss.append(np.mean(epoch_test_loss))
+test_acc.append(np.mean(epoch_test_acc))
 
 # Plotting the results
 
