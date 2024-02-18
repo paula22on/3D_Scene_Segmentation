@@ -62,7 +62,7 @@ if not os.path.exists(checkpoint_dir):
 
 #---- All above code works! Currently testing...
 # Training and Evaluation Loop
-epochs = 80
+epochs = 5
 train_loss = []
 val_loss = []
 test_loss = []
@@ -76,9 +76,11 @@ for epoch in tqdm(range(epochs)):
     epoch_train_loss = []
     epoch_train_acc = []
 
+    allitems = enumerate(train_dataloader)
     # Training Loop
-    for i, data in enumerate(train_dataloader):
+    for i, data in allitems:
         points, labels = data
+        points = points.float()
         points, labels = points.to(device), labels.to(device)
 
         optimizer.zero_grad()
@@ -108,6 +110,7 @@ for epoch in tqdm(range(epochs)):
     with torch.no_grad():
         for data in val_dataloader:
             points, labels = data
+            points = points.float()
             points, labels = points.to(device), labels.to(device)
             pred, _ = model(points)
             loss = criterion(pred.view(-1, NUM_CLASSES), labels.view(-1))
@@ -157,6 +160,7 @@ epoch_test_acc = []
 
 with torch.no_grad():
     for points, labels in test_dataloader:
+        points = points.float()
         points, labels = points.to(device), labels.to(device)
         pred, _ = model(points)
         labels = labels - 1

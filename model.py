@@ -164,7 +164,7 @@ class SegmentationPointNet(nn.Module):
         )  # we transpose to [batch_size, num_features, num_points] to match BasePointNet
         #  Shape of x after transpose: torch.Size([32, 3, 500])
 
-        global_features, feature_transform, per_point_features = self.base_pointnet(x)
+        global_features, feature_transform, per_point_features, _ = self.base_pointnet(x)
         # Shape of global_features: torch.Size([32, 256])
         # Shape of feature_transform: torch.Size([32, 64, 64])
         # Shape of per_point_features: torch.Size([32, 500, 64])
