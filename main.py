@@ -163,7 +163,6 @@ with torch.no_grad():
         points, labels = points.float(), labels.long()
         points, labels = points.to(device), labels.to(device)
         pred, _ = model(points)
-        labels = labels - 1
         loss = criterion(pred.view(-1, NUM_CLASSES), labels.view(-1))
         epoch_test_loss.append(loss.item())
 
