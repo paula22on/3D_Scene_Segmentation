@@ -80,7 +80,7 @@ for epoch in tqdm(range(epochs)):
     # Training Loop
     for i, data in allitems:
         points, labels = data
-        points = points.float()
+        points, labels = points.float(), labels.long()
         points, labels = points.to(device), labels.to(device)
 
         optimizer.zero_grad()
@@ -110,7 +110,7 @@ for epoch in tqdm(range(epochs)):
     with torch.no_grad():
         for data in val_dataloader:
             points, labels = data
-            points = points.float()
+            points, labels = points.float(), labels.long()
             points, labels = points.to(device), labels.to(device)
             pred, _ = model(points)
             loss = criterion(pred.view(-1, NUM_CLASSES), labels.view(-1))
@@ -160,7 +160,7 @@ epoch_test_acc = []
 
 with torch.no_grad():
     for points, labels in test_dataloader:
-        points = points.float()
+        points, labels = points.float(), labels.long()
         points, labels = points.to(device), labels.to(device)
         pred, _ = model(points)
         labels = labels - 1
