@@ -14,6 +14,7 @@ from utils import compute_accuracy
 
 SEGMENTATION = True
 NUM_POINTS = 2048
+NUM_CLASSES = 9
 
 def import_dataset(split = "train"):
     dataset = []
@@ -42,7 +43,7 @@ test_dataloader = DataLoader(test_dataset, batch_size=32, shuffle=False, num_wor
 
 
 if SEGMENTATION:
-    model = SegmentationPointNet(num_classes=6, point_dimension=3)
+    model = SegmentationPointNet(num_classes=NUM_CLASSES, point_dimension=3)
 else:
     model = ClassificationPointNet(num_classes=16, point_dimension=3, segmentation = False)
 
@@ -85,8 +86,7 @@ for epoch in tqdm(range(epochs)):
         # Forward pass
         pred, _ = model(points)
 
-        labels = labels - 1
-        loss = criterion(pred.view(-1, 6), labels.view(-1))
+        loss = criterion(pred.view(-1, NUM_CLASSES), labels.view(-1))
         epoch_train_loss.append(loss.item())
 
         # Accuracy Calculation for Segmentation
@@ -110,8 +110,7 @@ for epoch in tqdm(range(epochs)):
             points, labels = data
             points, labels = points.to(device), labels.to(device)
             pred, _ = model(points)
-            labels = labels - 1
-            loss = criterion(pred.view(-1, 6), labels.view(-1))
+            loss = criterion(pred.view(-1, NUM_CLASSES), labels.view(-1))
             epoch_val_loss.append(loss.item())
 
             acc = compute_accuracy(pred, labels)
@@ -161,7 +160,7 @@ with torch.no_grad():
         points, labels = points.to(device), labels.to(device)
         pred, _ = model(points)
         labels = labels - 1
-        loss = criterion(pred.view(-1, 6), labels.view(-1))
+        loss = criterion(pred.view(-1, NUM_CLASSES), labels.view(-1))
         epoch_test_loss.append(loss.item())
 
         acc = compute_accuracy(pred, labels)
