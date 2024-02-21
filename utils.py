@@ -1,3 +1,4 @@
+import matplotlib.pyplot as plt
 def compute_accuracy(pred, target):
     """Computes accuracy of the segmentation"""
     pred_choice = pred.max(1)[1]
