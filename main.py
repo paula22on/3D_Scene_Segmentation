@@ -62,7 +62,7 @@ if not os.path.exists(checkpoint_dir):
 
 #---- All above code works! Currently testing...
 # Training and Evaluation Loop
-epochs = 15
+epochs = 80
 train_loss = []
 test_loss = []
 train_acc = []
