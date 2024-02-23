@@ -118,7 +118,7 @@ for epoch in tqdm(range(epochs)):
             epoch_val_iou.append(mean_iou)
 
         print(
-            "Epoch %s: train loss: %s, val loss: %f, train accuracy: %s,  val accuracy: %f"
+            "Epoch %s: train loss: %s, val loss: %f, train accuracy: %s,  val accuracy: %f, train IoU %s,  val IoU: %f"
             % (
                 epoch,
                 round(np.mean(epoch_train_loss), 4),
