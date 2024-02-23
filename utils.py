@@ -30,6 +30,16 @@ def plot_accuracies(train_acc, test_acc, save_to_file=None):
     if save_to_file:
         fig.savefig(save_to_file)
 
+def plot_IoU(train_IoU, test_IoU, save_to_file=None):
+    fig = plt.figure()
+    epochs = len(train_IoU)
+    plt.plot(range(epochs), train_IoU, label='Training IoU')
+    plt.plot(range(epochs), test_IoU, label='Validation IoU')
+    plt.title('Training and validation IoU')
+    plt.legend()
+    if save_to_file:
+        fig.savefig(save_to_file)
+
 def calculate_iou(pred, target, num_classes):
     """
     Calculate IoU for each class and average IoU.
