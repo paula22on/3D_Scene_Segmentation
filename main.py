@@ -10,7 +10,7 @@ from torch.utils.data import DataLoader
 
 from dataset import MyDataset
 from model import ClassificationPointNet, SegmentationPointNet
-from utils import compute_accuracy
+from utils import compute_accuracy, plot_losses, plot_accuracies
 
 SEGMENTATION = True
 NUM_POINTS = 2048
@@ -48,10 +48,8 @@ if not os.path.exists(checkpoint_dir):
 # Training and Evaluation Loop
 epochs = 80
 train_loss = []
-val_loss = []
 test_loss = []
 train_acc = []
-val_acc = []
 test_acc = []
 best_loss = np.inf
 
@@ -123,18 +121,18 @@ for epoch in tqdm(range(epochs)):
 
     # Logging
     train_loss.append(np.mean(epoch_train_loss))
-    val_loss.append(np.mean(epoch_val_loss))
+    test_loss.append(np.mean(epoch_val_loss))
     train_acc.append(np.mean(epoch_train_acc))
-    val_acc.append(np.mean(epoch_val_acc))
+    test_acc.append(np.mean(epoch_val_acc))
 
     print(
         f"Epoch {epoch}: Train Loss: {train_loss[-1]}, "
-        f"Val Loss: {val_loss[-1]}, "
+        f"Val Loss: {test_loss[-1]}, "
         f"Train Acc: {train_acc[-1]}, "
-        f"Val Acc: {val_acc[-1]}"
+        f"Val Acc: {test_acc[-1]}"
     )
 
-# Testing loop
+# Testing our model
 model.eval()
 epoch_test_loss = []
 epoch_test_acc = []
@@ -158,27 +156,8 @@ print(
     f"Test Results - Loss: {average_test_loss:.4f}, Accuracy: {average_test_accuracy:.2f}%"
 )
 
-# Logging for testing
-test_loss.append(np.mean(epoch_test_loss))
-test_acc.append(np.mean(epoch_test_acc))
-
 # Plotting the results
+output_folder='figures'
 
-plt.figure(figsize=(12, 6))
-plt.subplot(1, 2, 1)
-plt.plot(train_loss, label="Train Loss")
-plt.plot(val_loss, label="Test Loss")
-plt.title("Loss over Epochs")
-plt.xlabel("Epoch")
-plt.ylabel("Loss")
-plt.legend()
-
-plt.subplot(1, 2, 2)
-plt.plot(train_acc, label="Train Accuracy")
-plt.plot(val_acc, label="Test Accuracy")
-plt.title("Accuracy over Epochs")
-plt.xlabel("Epoch")
-plt.ylabel("Accuracy")
-plt.legend()
-
-plt.show()
+plot_losses(train_loss, test_loss, save_to_file=os.path.join(output_folder, 'loss_plot' + str(NUM_POINTS) + '.png'))
+plot_accuracies(train_acc, test_acc, save_to_file=os.path.join(output_folder, 'accuracy_plot' + str(NUM_POINTS) + '.png'))
