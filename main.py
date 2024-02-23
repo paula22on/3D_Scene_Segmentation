@@ -10,16 +10,20 @@ from torch.utils.data import DataLoader
 
 from dataset import MyDataset
 from model import ClassificationPointNet, SegmentationPointNet
-from utils import compute_accuracy, plot_losses, plot_accuracies
+from utils import compute_accuracy, plot_losses, plot_accuracies, visualize_points
 
 SEGMENTATION = True
 NUM_POINTS = 2048
 NUM_CLASSES = 9
 
-train_dataset = MyDataset("data", NUM_POINTS, "train")
+train_dataset = MyDataset("data", NUM_POINTS, "train", "augmentation")
 test_dataset = MyDataset("data", NUM_POINTS, "test")
 train_dataset, val_dataset = torch.utils.data.random_split(train_dataset, [2300, 600])
 
+#---- Sample visualization
+# points, labels = test_dataset[0]
+# points, labels = points.tolist(), labels.tolist()
+# visualize_points(points, labels)
 
 train_dataloader = DataLoader(train_dataset, batch_size=32, shuffle=True)
 val_dataloader = DataLoader(val_dataset, batch_size=32, shuffle=False)
