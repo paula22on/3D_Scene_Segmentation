@@ -16,30 +16,14 @@ SEGMENTATION = True
 NUM_POINTS = 2048
 NUM_CLASSES = 9
 
-def import_dataset(split = "train"):
-    dataset = []
-    path = "data/" + split + '/'
-    tiles = os.listdir(path)
-    for tile in tiles:
-        samples = os.listdir(path + tile + '/')
-        print("Loading currently tile: " + tile)
-        for x in samples:
-            item = pd.read_csv(path + tile + '/' + x, dtype=int)
-            dataset.append(item)
-    return dataset
-
-#Loading time...2m
-train_dataset = import_dataset()
-test_dataset = import_dataset(split = "test")
-
-train_dataset = MyDataset(train_dataset, NUM_POINTS, "train")
-test_dataset = MyDataset(test_dataset, NUM_POINTS, "test")
+train_dataset = MyDataset("data", NUM_POINTS, "train")
+test_dataset = MyDataset("data", NUM_POINTS, "test")
 train_dataset, val_dataset = torch.utils.data.random_split(train_dataset, [2300, 600])
 
 
-train_dataloader = DataLoader(train_dataset, batch_size=32, shuffle=True, num_workers=4)
-val_dataloader = DataLoader(val_dataset, batch_size=32, shuffle=False, num_workers=4)
-test_dataloader = DataLoader(test_dataset, batch_size=32, shuffle=False, num_workers=4)
+train_dataloader = DataLoader(train_dataset, batch_size=32, shuffle=True)
+val_dataloader = DataLoader(val_dataset, batch_size=32, shuffle=False)
+test_dataloader = DataLoader(test_dataset, batch_size=32, shuffle=False)
 
 
 if SEGMENTATION:
@@ -62,7 +46,7 @@ if not os.path.exists(checkpoint_dir):
 
 #---- All above code works! Currently testing...
 # Training and Evaluation Loop
-epochs = 15
+epochs = 80
 train_loss = []
 val_loss = []
 test_loss = []
@@ -76,11 +60,9 @@ for epoch in tqdm(range(epochs)):
     epoch_train_loss = []
     epoch_train_acc = []
 
-    allitems = enumerate(train_dataloader)
     # Training Loop
-    for i, data in allitems:
+    for i, data in enumerate(train_dataloader):
         points, labels = data
-        points, labels = points.float(), labels.long()
         points, labels = points.to(device), labels.to(device)
 
         optimizer.zero_grad()
@@ -110,7 +92,6 @@ for epoch in tqdm(range(epochs)):
     with torch.no_grad():
         for data in val_dataloader:
             points, labels = data
-            points, labels = points.float(), labels.long()
             points, labels = points.to(device), labels.to(device)
             pred, _ = model(points)
             loss = criterion(pred, labels)
@@ -160,7 +141,6 @@ epoch_test_acc = []
 
 with torch.no_grad():
     for points, labels in test_dataloader:
-        points, labels = points.float(), labels.long()
         points, labels = points.to(device), labels.to(device)
         pred, _ = model(points)
         loss = criterion(pred, labels)
