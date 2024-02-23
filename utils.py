@@ -30,6 +30,40 @@ def plot_accuracies(train_acc, test_acc, save_to_file=None):
     if save_to_file:
         fig.savefig(save_to_file)
 
+def calculate_iou(pred, target, num_classes):
+    """
+    Calculate IoU for each class and average IoU.
+    
+    Args:
+        pred: Predicted labels as a torch.Tensor.
+        target: Ground truth labels as a torch.Tensor.
+        num_classes: Number of classes in the dataset.
+        
+    Returns:
+        ious: A list of IoU for each class.
+        mean_iou: Average IoU across all classes.
+    """
+    ious = []
+    pred = torch.argmax(pred, dim=1).view(-1)
+    target = target.view(-1)
+    
+    # Ignore background class if necessary
+    for cls in range(num_classes):  # Adjust range if you have a background class
+        pred_inds = pred == cls
+        target_inds = target == cls
+        intersection = (pred_inds[target_inds]).long().sum().item()  # Intersection points
+        union = pred_inds.long().sum().item() + target_inds.long().sum().item() - intersection  # Union points
+        
+        if union == 0:
+            ious.append(float('nan'))  # No division by zero
+        else:
+            ious.append(float(intersection) / float(max(union, 1)))
+    
+    # Remove NaNs and calculate mean IoU
+    valid_ious = [iou for iou in ious if not math.isnan(iou)]
+    mean_iou = sum(valid_ious) / len(valid_ious)
+    
+    return ious, mean_iou
 
 def visualize_points(in_points, in_labels, path = None):
         
