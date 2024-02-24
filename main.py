@@ -168,6 +168,7 @@ iou_log_file.close()
 model.eval()
 epoch_test_loss = []
 epoch_test_acc = []
+epoch_test_iou = [] 
 
 with torch.no_grad():
     for points, labels in test_dataloader:
@@ -179,13 +180,17 @@ with torch.no_grad():
         acc = compute_accuracy(pred, labels)
         epoch_test_acc.append(acc)
 
+        ious, mean_iou = calculate_iou(pred, labels, NUM_CLASSES)
+        epoch_test_iou.append(mean_iou)
+
 # After completing the loop over the test_dataloader
 average_test_loss = sum(epoch_test_loss) / len(epoch_test_loss)
 average_test_accuracy = sum(epoch_test_acc) / len(epoch_test_acc)
+average_test_iou = sum(epoch_test_iou) / len(epoch_test_iou)
 
 # Print the results
 print(
-    f"Test Results - Loss: {average_test_loss:.4f}, Accuracy: {average_test_accuracy:.2f}%"
+    f"Test Results - Loss: {average_test_loss:.4f}, Accuracy: {average_test_accuracy:.2f}, IoU: {average_test_iou:.2f}%"
 )
 
 # Plotting the results
