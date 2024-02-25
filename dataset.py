@@ -24,7 +24,7 @@ class MyDataset(Dataset):
             raise IndexError("Trying to access sample beyond dataset length")
 
         # Read csv depending on index
-        sample_path = f"{self.samples_path}/10_divisions_{idx}.csv"
+        sample_path = f"{self.samples_path}/100_divisions_{idx}.csv"
         sample_df = pd.read_csv(sample_path, dtype=int)
 
         # Pick n points
