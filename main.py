@@ -1,18 +1,27 @@
-import os
 import csv
-import pandas as pd
+import os
+
 import matplotlib.pyplot as plt
 import numpy as np
+import pandas as pd
 import torch
 import torch.optim as optim
-from tqdm import tqdm
 from torch.utils.data import DataLoader
+from tqdm import tqdm
 
 from dataset import MyDataset
 from model import ClassificationPointNet, SegmentationPointNet
-from utils import compute_accuracy, plot_losses, plot_accuracies, visualize_points,  calculate_iou, plot_IoU
+from utils import (
+    calculate_iou,
+    compute_accuracy,
+    plot_accuracies,
+    plot_IoU,
+    plot_losses,
+    visualize_points,
+)
 
 SEGMENTATION = True
+WEIGHTED_LOSS = True
 NUM_POINTS = 2048
 NUM_CLASSES = 9
 
@@ -20,7 +29,7 @@ train_dataset = MyDataset("data", NUM_POINTS, "train", "augmentation")
 test_dataset = MyDataset("data", NUM_POINTS, "test")
 train_dataset, val_dataset = torch.utils.data.random_split(train_dataset, [2300, 600])
 
-#---- Sample visualization
+# ---- Sample visualization
 # points, labels = test_dataset[0]
 # points, labels = points.tolist(), labels.tolist()
 # visualize_points(points, labels)
@@ -33,24 +42,40 @@ test_dataloader = DataLoader(test_dataset, batch_size=32, shuffle=False)
 if SEGMENTATION:
     model = SegmentationPointNet(num_classes=NUM_CLASSES, point_dimension=3)
 else:
-    model = ClassificationPointNet(num_classes=16, point_dimension=3, segmentation = False)
+    model = ClassificationPointNet(
+        num_classes=16, point_dimension=3, segmentation=False
+    )
 
 if torch.cuda.is_available():
     model.cuda()
-    device = 'cuda'
+    device = "cuda"
 else:
-    device = 'cpu'
+    device = "cpu"
 
-criterion = torch.nn.NLLLoss()
+# Calculate weighted loss -- New code it may break here
+if WEIGHTED_LOSS:
+    class_weights = (
+        train_dataset.calculate_class_weights()
+    )  # get weight from MyDataset function
+    class_weights_tensor = torch.tensor(
+        class_weights, dtype=torch.float
+    )  # convert numpy to tensor
+    if torch.cuda.is_available():
+        class_weights_tensor = class_weights_tensor.cuda()
+
+    criterion = torch.nn.CrossEntropyLoss(weight=class_weights_tensor)
+else:
+    criterion = torch.nn.NLLLoss()
+
 optimizer = optim.Adam(model.parameters(), lr=0.001)
 
 checkpoint_dir = "checkpoints-segmentation"
 if not os.path.exists(checkpoint_dir):
     os.makedirs(checkpoint_dir)
 
-iou_log_file = open('iou_log.txt', 'a')
+iou_log_file = open("iou_log.txt", "a")
 
-#---- All above code works! Currently testing...
+# ---- All above code works! Currently testing...
 # Training and Evaluation Loop
 epochs = 80
 train_loss = []
@@ -168,7 +193,7 @@ iou_log_file.close()
 model.eval()
 epoch_test_loss = []
 epoch_test_acc = []
-epoch_test_iou = [] 
+epoch_test_iou = []
 
 with torch.no_grad():
     for points, labels in test_dataloader:
@@ -194,8 +219,22 @@ print(
 )
 
 # Plotting the results
-output_folder='figures'
+output_folder = "figures"
 
-plot_losses(train_loss, test_loss, save_to_file=os.path.join(output_folder, 'loss_plot' + str(NUM_POINTS) + '.png'))
-plot_accuracies(train_acc, test_acc, save_to_file=os.path.join(output_folder, 'accuracy_plot' + str(NUM_POINTS) + '.png'))
-plot_IoU(train_iou, test_iou, save_to_file=os.path.join(output_folder, 'iou_plot' + str(NUM_POINTS) + '.png'))
+plot_losses(
+    train_loss,
+    test_loss,
+    save_to_file=os.path.join(output_folder, "loss_plot" + str(NUM_POINTS) + ".png"),
+)
+plot_accuracies(
+    train_acc,
+    test_acc,
+    save_to_file=os.path.join(
+        output_folder, "accuracy_plot" + str(NUM_POINTS) + ".png"
+    ),
+)
+plot_IoU(
+    train_iou,
+    test_iou,
+    save_to_file=os.path.join(output_folder, "iou_plot" + str(NUM_POINTS) + ".png"),
+)
