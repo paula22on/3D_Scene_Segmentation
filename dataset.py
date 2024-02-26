@@ -1,12 +1,16 @@
 import os
-import torch
+from collections import Counter
+
 import numpy as np
 import pandas as pd
-from collections import Counter
+import torch
 from torch.utils.data import Dataset
 
+
 class MyDataset(Dataset):
-    def __init__(self, samples_path, number_points, split = "train", sample_method = "random"):
+    def __init__(
+        self, samples_path, number_points, split="train", sample_method="random"
+    ):
         super().__init__()
         self.samples_path = samples_path + "/" + split
         self.number_points = number_points
@@ -15,11 +19,13 @@ class MyDataset(Dataset):
 
     def __len__(self):
         # Count the number of samples (csv files) present in the directory
-        num_csv_files = sum(1 for file in os.listdir(self.samples_path) if file.endswith('.csv'))
+        num_csv_files = sum(
+            1 for file in os.listdir(self.samples_path) if file.endswith(".csv")
+        )
         return num_csv_files
-    
+
     def __getitem__(self, idx):
-        
+
         if idx >= self.__len__():
             raise IndexError("Trying to access sample beyond dataset length")
 
@@ -38,11 +44,13 @@ class MyDataset(Dataset):
         labels = sample_reduced.iloc[:, 3]
 
         # Create tensor for the sample and its labels
-        sample = torch.tensor(sample.values, dtype=torch.float) # tensor of 3 x n_points
-        labels = torch.tensor(labels.values, dtype=torch.long) # tensor of n_points
+        sample = torch.tensor(
+            sample.values, dtype=torch.float
+        )  # tensor of 3 x n_points
+        labels = torch.tensor(labels.values, dtype=torch.long)  # tensor of n_points
 
         return sample, labels
-    
+
     def augmentation(self, dataframe):
 
         sample = dataframe.values
@@ -58,13 +66,17 @@ class MyDataset(Dataset):
             # If the count is above the average A, randomly select A samples
             if count > average_num_points:
                 label_rows = sample[labels == label]
-                selected_indices = np.random.choice(len(label_rows), size=average_num_points, replace=False)
+                selected_indices = np.random.choice(
+                    len(label_rows), size=average_num_points, replace=False
+                )
                 selected_points.extend(label_rows[selected_indices])
 
             # If the count is below the average A, randomly select a sample and replicate it
             elif count < average_num_points:
                 label_rows = sample[labels == label]
-                selected_indices = np.random.choice(len(label_rows), size=average_num_points - count, replace=True)
+                selected_indices = np.random.choice(
+                    len(label_rows), size=average_num_points - count, replace=True
+                )
                 selected_points.extend(label_rows)
                 selected_points.extend(label_rows[selected_indices])
 
@@ -73,5 +85,26 @@ class MyDataset(Dataset):
 
         return sample_reduced
 
+    def calculate_class_weights(self):
+        label_distribution = Counter()
 
-    
+        for file in os.listdir(self.sample_path):
+            if file.endswidth(".csv"):
+                sample_path = os.path.join(self.samples_path, file)
+                sample_df = pd.read_csv(sample_path, dtype=int)
+                labels = sample_df.iloc[:, 3].values
+                label_distribution.update(labels)
+
+        # Calculate weights inversely proportional to the frequency of each class
+        total_count = sum(
+            label_distribution.values()
+        )  # calculates total amount of value sin each class
+        class_weights = {
+            class_label: total_count / (len(label_distribution) * count)
+            for class_label, count in label_distribution.items()
+        }  # total_count = total number samples, len(label_distr): number unique classes, count: instances in each class
+
+        # Convert the weights into a sorted list based on the class labels -- we need to make sure that each weight corresponds to each class!!
+        weights = [class_weights[i] for i in range(len(class_weights))]
+
+        return np.array(weights)
