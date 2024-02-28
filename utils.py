@@ -3,6 +3,10 @@ import numpy as np
 import csv
 import math
 import torch
+import laspy
+
+
+# --- METRICS
 
 def compute_accuracy(pred, target):
     """Computes accuracy of the segmentation"""
@@ -77,52 +81,103 @@ def calculate_iou(pred, target, num_classes):
     
     return ious, mean_iou
 
-def visualize_points(in_points, in_labels, path = None):
+
+# --- FILE HANDLING
+
+def convert_las_to_csv(path):
+    las = laspy.read(path)
+    path = path[:-3]+"csv"
+    with open(path, "w") as csv_file:
+        for i in range(len(las)):
+            line = f"{las.X[i]},{las.Y[i]},{las.Z[i]},{las.classification[i]}\n"
+            csv_file.write(line)
+
+
+def read_sample_from_csv(path):
+    points = []
+    labels = []
+
+    with open(path, 'r') as file:
+        csv_reader = csv.reader(file)
+        for row in csv_reader:
+            points.append(row[:-1])
+            labels.append(row[-1])
+
+    return points, labels
+
+
+# --- VISUALIZATION
         
-        if path is not None:
-            points = []
-            labels = []
-            with open(path, 'r') as file:
-                csv_reader = csv.reader(file)
-                for row in csv_reader:
-                    points.append(row[:-1])
-                    labels.append(row[-1])
-        else:
-            points = in_points
-            labels = in_labels
+def prepare_3d_subplot(ax, points, labels, verbose = True):
+    X, Y, Z, L = [],[],[],[]
+    for point in points:
+        X.append(point[0])
+        Y.append(point[1])
+        Z.append(point[2])
+    for label in labels:
+        L.append(label)
+    
+    X = np.array(X, dtype=np.uint64)
+    Y = np.array(Y, dtype=np.uint64)
+    Z = np.array(Z, dtype=np.uint64)
+    L = np.array(L, dtype=np.uint8)
+    
+    cdict = {1: 'blue', 2: 'green', 3: 'purple', 4:'orange', 5: 'yellow', 6:'white', 7:'pink', 8:'red'}  
+    for classification in np.unique(L)[1:]:
+        color = cdict.get(classification, 'black')  
+        ax.scatter(
+            X[L == classification],  
+            Y[L == classification],  
+            Z[L == classification],  
+            s = 25,
+            c=color
+        )
 
-        X1, Y1, Z1, L1 = [], [], [], []
-
-        for point in points:
-            X1.append(point[0])
-            Y1.append(point[1])
-            Z1.append(point[2])
-
-        for label in labels:
-            L1.append(label)
-
-        X1 = np.array(X1, dtype=np.uint64)
-        Y1 = np.array(Y1, dtype=np.uint64)
-        Z1 = np.array(Z1, dtype=np.uint64)
-        L1 = np.array(L1, dtype=np.uint8)
-
-        print(f"Number of points {len(X1)}")
-
-        cdict = {1: 'blue', 2: 'green', 3: 'purple', 4:'orange', 5: 'yellow', 6:'white', 7:'pink', 8:'red'}  
-        fig = plt.figure(figsize=[20,20])
-        ax = fig.add_subplot(111, projection='3d')
-
-        for classification in np.unique(L1)[1:]:
-            color = cdict.get(classification, 'black')  
-            ax.scatter(
-                 X1[L1 == classification],  
-                 Y1[L1 == classification],  
-                 Z1[L1 == classification],  
-                 s = 25, c=color)
-            
-        # ax.view_init(90, 0)
+    if verbose:
         ax.set_xlabel('X-axis')
         ax.set_ylabel('Y-axis')
         ax.set_zlabel('Z-axis')
-        ax.set_title('LAS Point Cloud Visualization')
-        plt.show()  
+    else:
+        ax.set_xticks([])
+        ax.set_yticks([])
+        ax.set_zticks([])
+
+    # ax.view_init(90, 0)
+
+
+def visualize_sample(points, labels):
+    fig = plt.figure(figsize=(15, 10))
+    ax = fig.add_subplot(111, projection='3d')
+    prepare_3d_subplot(ax, points, labels)
+    plt.tight_layout()
+    plt.show()
+
+
+def visualize_tile_by_path(path):
+    convert_las_to_csv(path)
+    points, labels = read_sample_from_csv(path[:-3]+"csv")
+    visualize_sample(points, labels)
+
+
+def visualize_sample_by_path(path):
+    points, labels = read_sample_from_csv(path)
+    visualize_sample(points, labels)
+
+
+def visualize_100_samples(dirpath, start_idx):
+    samples = []
+
+    fig, axes = plt.subplots(
+        10, 10, figsize=(10, 10), subplot_kw={'projection': '3d'}
+    )
+
+    for idx in range(start_idx, 100):
+        path = f"{dirpath}/10_divisions_{idx}.csv"
+        sample = read_sample_from_csv(path)
+        samples.append(sample)
+
+    for ax, sample in zip(axes.flat, samples):
+        prepare_3d_subplot(ax, sample[0], sample[1], False)
+
+    plt.tight_layout()
+    plt.show()
