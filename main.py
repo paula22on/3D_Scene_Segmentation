@@ -18,6 +18,7 @@ from utils import (
     plot_accuracies,
     plot_confusion_matrix,
     plot_IoU,
+    plot_iou_per_class,
     plot_losses,
     visualize_points,
 )
@@ -87,6 +88,12 @@ test_acc = []
 train_iou = []
 test_iou = []
 best_loss = np.inf
+train_iou_per_class = {
+    i: [] for i in range(NUM_CLASSES)
+}  # For storing training IoU per class
+test_iou_per_class = {
+    i: [] for i in range(NUM_CLASSES)
+}  # For storing validation/testing IoU per class
 
 for epoch in tqdm(range(epochs)):
     model.train()
@@ -114,6 +121,8 @@ for epoch in tqdm(range(epochs)):
         # IoU Calculation for Segmentation
         ious, mean_iou = calculate_iou(pred, labels, NUM_CLASSES)
         epoch_train_iou.append(mean_iou)
+        for cls in range(NUM_CLASSES):
+            train_iou_per_class[cls].append(ious[cls])
 
         # Backward pass and optimize
         loss.backward()
@@ -210,6 +219,8 @@ with torch.no_grad():
 
         ious, mean_iou = calculate_iou(pred, labels, NUM_CLASSES)
         epoch_test_iou.append(mean_iou)
+        for cls in range(NUM_CLASSES):
+            test_iou_per_class[cls].append(ious[cls])
 
         # CONFUSION MATRIX
         batch_confusion_matrix = compute_confusion_matrix(
@@ -250,6 +261,26 @@ plot_IoU(
 )
 
 class_names = [f"Class {i}" for i in range(NUM_CLASSES)]
+
+# training
+plot_iou_per_class(
+    train_iou_per_class,
+    class_names,
+    phase="Training",
+    save_to_file=os.path.join(
+        output_folder, "iou_train_per_class_plot" + str(NUM_POINTS) + ".png"
+    ),
+)
+
+# testing
+plot_iou_per_class(
+    test_iou_per_class,
+    class_names,
+    phase="Testing",
+    save_to_file=os.path.join(
+        output_folder, "iou_test_per_class_plot" + str(NUM_POINTS) + ".png"
+    ),
+)
 
 plot_confusion_matrix(
     total_confusion_matrix,
