@@ -2,35 +2,68 @@
 
 ## Overview
 
-This repository contains the implementation of PointNet for 3D scene segmentation. PointNet is a deep learning model designed for processing and segmenting 3D point cloud data, making it useful for tasks like object recognition and scene segmentation in 3D environments.
+This project implements a deep neural network model using the PointNet architecture for classification and segmentation tasks on 3D point cloud data. The implementation supports both tasks with adjustable parameters for the number of points in the cloud, the number of classes, and the choice between using a weighted loss function or not.
 
-## Table of Contents
-
-Introduction
-Installation
-Usage
-Dataset
-Training
-Evaluation
-Results
-Contributing
-License
-
-## Introduction
+### More about PointNet
 
 PointNet is a pioneering deep learning architecture for processing unstructured 3D point cloud data. It's a powerful tool for various tasks in computer vision, robotics, and augmented reality, and this repository provides an implementation tailored for 3D scene segmentation.
 
+## Features
+
+- Classification and Segmentation: Support for both 3D point cloud classification and segmentation tasks.
+- Weighted Loss Option: Option to use weighted loss during training to handle class imbalance.
+- Custom Dataset Handling: Includes a custom dataset loader to handle 3D point cloud data efficiently.
+- Visualization Tools: Functions to visualize training progress, including losses, accuracies, IoU scores, and confusion matrices.
+- GPU Support: Utilizes GPU acceleration if available to speed up training and inference processes.
+
+## Requirements
+
+- Python 3.8 or later
+- PyTorch 1.7.0 or later
+- Matplotlib
+- Numpy
+- Pandas
+
 ## Installation
 
-To get started, follow these steps to set up the project:
+1. Clone this repository to your local machine.
+2. Ensure you have Python 3.8 or later installed.
+3. Install the required Python packages:
 
-xxx
+```
+pip install torch torchvision numpy pandas matplotlib tqdm
+```
+
+4. Navigate to the cloned repository's directory.
 
 ## Usage
 
-Describe how to use your code. Provide clear instructions and examples on how to run the training, testing, and inference processes.
+To use this project for training or evaluating a PointNet model on your dataset, follow these steps:
 
-xxx
+Prepare your dataset in the required format and place it in the data directory.
+
+Run the main script to start training or evaluation:
+
+```
+python main.py
+```
+
+### Customization options
+
+You can customize the training process by modifying the following flags in main.py:
+
+- SEGMENTATION: Set to True for segmentation tasks, or False for classification.
+- WEIGHTED_LOSS: Enable or disable weighted loss calculation.
+- NUM_POINTS: The number of points in each point cloud.
+- NUM_CLASSES: The number of classes for classification/segmentation.
+
+### Visualization
+
+After training, use the visualization functions to analyze the performance:
+
+```
+plot_losses(train_loss, test_loss)
+```
 
 ## Dataset
 
@@ -53,6 +86,7 @@ dales_las/
 3. Use the `data_preprocessing.py` script for data pre-processing. Run the script by specifying the path to the dataset and the divider values.
 
 Example command:
+
 ```
 python3 data_preprocessing.py /home/dales_las 10
 ```
@@ -78,6 +112,7 @@ These steps will preprocess the dataset, making it suitable for further analysis
 To visualize the subsamples, just run the `data_visualization.py` script by specifying the path to the data subsample.
 
 Example command:
+
 ```
 python3 data_visualization.py data/train/10_divisions_0.csv
 ```
