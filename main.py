@@ -14,7 +14,9 @@ from model import ClassificationPointNet, SegmentationPointNet
 from utils import (
     calculate_iou,
     compute_accuracy,
+    compute_confusion_matrix,
     plot_accuracies,
+    plot_confusion_matrix,
     plot_IoU,
     plot_losses,
     visualize_points,
@@ -194,6 +196,7 @@ model.eval()
 epoch_test_loss = []
 epoch_test_acc = []
 epoch_test_iou = []
+total_confusion_matrix = np.zeros((NUM_CLASSES, NUM_CLASSES))
 
 with torch.no_grad():
     for points, labels in test_dataloader:
@@ -207,6 +210,13 @@ with torch.no_grad():
 
         ious, mean_iou = calculate_iou(pred, labels, NUM_CLASSES)
         epoch_test_iou.append(mean_iou)
+
+        # CONFUSION MATRIX
+        batch_confusion_matrix = compute_confusion_matrix(
+            total_confusion_matrix, pred, labels, NUM_CLASSES
+        )
+        total_confusion_matrix += batch_confusion_matrix
+
 
 # After completing the loop over the test_dataloader
 average_test_loss = sum(epoch_test_loss) / len(epoch_test_loss)
@@ -237,4 +247,14 @@ plot_IoU(
     train_iou,
     test_iou,
     save_to_file=os.path.join(output_folder, "iou_plot" + str(NUM_POINTS) + ".png"),
+)
+
+class_names = [f"Class {i}" for i in range(NUM_CLASSES)]
+
+plot_confusion_matrix(
+    total_confusion_matrix,
+    class_names,
+    save_to_file=os.path.join(
+        output_folder, "confmatrix_plot" + str(NUM_POINTS) + ".png"
+    ),
 )
