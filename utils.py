@@ -112,13 +112,14 @@ def plot_IoU(train_IoU, test_IoU, save_to_file=None):
 
 
 def plot_iou_per_class(iou_per_class, class_names, phase="Testing", save_to_file=None):
-    """Plot IoU for each class across epochs."""
+    """Plot IoU for each class across epochs/test."""
     epochs = range(1, len(next(iter(iou_per_class.values()))) + 1)
     plt.figure(figsize=(10, 7))
     for cls, ious in iou_per_class.items():
         plt.plot(epochs, ious, label=f"{class_names[cls]}")
 
-    plt.title(f"{phase} IoU per Class Over Epochs")
+    if phase=="Testing": plt.title(f"{phase} IoU per Class Over Evaluation")
+    else: plt.title(f"{phase} IoU per Class Over Epochs")
     plt.xlabel("Epoch")
     plt.ylabel("IoU")
     plt.legend()
@@ -126,7 +127,7 @@ def plot_iou_per_class(iou_per_class, class_names, phase="Testing", save_to_file
 
     if save_to_file:
         plt.savefig(save_to_file)
-    plt.show()
+    else: plt.show()
 
 
 def plot_confusion_matrix(total_confusion_matrix, class_names, save_to_file=None):
