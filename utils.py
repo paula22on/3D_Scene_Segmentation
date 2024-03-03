@@ -120,7 +120,8 @@ def plot_iou_per_class(iou_per_class, class_names, phase="Testing", save_to_file
 
     if phase=="Testing": plt.title(f"{phase} IoU per Class Over Evaluation")
     else: plt.title(f"{phase} IoU per Class Over Epochs")
-    plt.xlabel("Epoch")
+    if phase=="Testing":plt.xlabel("Batch")
+    else: plt.xlabel("Epoch")
     plt.ylabel("IoU")
     plt.legend()
     plt.grid(True)
@@ -133,16 +134,16 @@ def plot_iou_per_class(iou_per_class, class_names, phase="Testing", save_to_file
 def plot_confusion_matrix(total_confusion_matrix, class_names, save_to_file=None):
     fig = plt.figure(figsize=(10, 7))
     sns.heatmap(
-        total_confusion_matrix,
+        np.round((total_confusion_matrix / total_confusion_matrix.sum(axis=1, keepdims=True))*100, 2),
         annot=True,
-        fmt="d",
+        fmt=".2f",
         cmap="Blues",
         xticklabels=class_names,
         yticklabels=class_names,
     )
     plt.xlabel("Predicted labels")
     plt.ylabel("True labels")
-    plt.title("Confusion Matrix")
+    plt.title("Normalized Confusion Matrix (%)")
     if save_to_file:
         fig.savefig(save_to_file)
     plt.close(fig)
