@@ -178,6 +178,7 @@ def read_sample_from_csv(path):
 
 
 def prepare_3d_subplot(ax, points, labels, verbose=True):
+
     X, Y, Z, L = [], [], [], []
     for point in points:
         X.append(point[0])
@@ -190,16 +191,15 @@ def prepare_3d_subplot(ax, points, labels, verbose=True):
     Y = np.array(Y)
     Z = np.array(Z)
     L = np.array(L)
-
     cdict = {
-        1: "blue",
-        2: "green",
-        3: "purple",
-        4: "orange",
-        5: "yellow",
-        6: "white",
-        7: "pink",
-        8: "red",
+        1: "blue",   # Ground
+        2: "green",  # Vegetation
+        3: "purple", # Cars
+        4: "orange", # Trucks
+        5: "yellow", # Powerlines
+        6: "white",  # Fences
+        7: "pink",   # Poles
+        8: "red",    # Buildings
     }
     for classification in np.unique(L)[1:]:
         color = cdict.get(classification, "black")
