@@ -186,10 +186,10 @@ def prepare_3d_subplot(ax, points, labels, verbose=True):
     for label in labels:
         L.append(label)
 
-    X = np.array(X, dtype=np.uint64)
-    Y = np.array(Y, dtype=np.uint64)
-    Z = np.array(Z, dtype=np.uint64)
-    L = np.array(L, dtype=np.uint8)
+    X = np.array(X)
+    Y = np.array(Y)
+    Z = np.array(Z)
+    L = np.array(L)
 
     cdict = {
         1: "blue",
@@ -223,12 +223,14 @@ def prepare_3d_subplot(ax, points, labels, verbose=True):
     # ax.view_init(90, 0)
 
 
-def visualize_sample(points, labels):
+def visualize_sample(points, labels, save_to_file = "None", phase = "None"):
     fig = plt.figure(figsize=(15, 10))
     ax = fig.add_subplot(111, projection="3d")
     prepare_3d_subplot(ax, points, labels)
+    if phase == "Testing": plt.title("Predicted output")
     plt.tight_layout()
-    plt.show()
+    if save_to_file: plt.savefig(save_to_file)
+    else: plt.show()
 
 
 def visualize_tile_by_path(path):
