@@ -31,7 +31,7 @@ class MyDataset(Dataset):
 
         # Read csv depending on index
         sample_path = f"{self.samples_path}/10_divisions_{idx}.csv"
-        sample_df = pd.read_csv(sample_path, dtype=int)
+        sample_df = pd.read_csv(sample_path, dtype=float)
 
         # Randomly pick n points
         sample_reduced = sample_df.sample(self.number_points)
