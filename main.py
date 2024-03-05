@@ -296,7 +296,7 @@ def main():
     iou_class_file = open("iou_class.txt", "a")
     for cls, ious in train_iou_per_class.items():
         iou_mean_per_class = np.mean(ious)
-        iou_class_file.write(f"{class_names[cls]}: avg_iou = {iou_mean_per_class:.4f}\n")
+        iou_class_file.write(f"{class_names[cls]}: avg_iou = {iou_mean_per_class:.4f}, final_iou = {ious[-1]:.4f}\n")
         iou_class_file.flush()
     iou_class_file.close()
 
