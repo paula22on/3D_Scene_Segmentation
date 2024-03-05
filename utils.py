@@ -10,6 +10,7 @@ from sklearn.metrics import confusion_matrix
 
 
 # --- METRICS
+
 def compute_accuracy(pred, target):
     """Computes accuracy of the segmentation"""
     pred_choice = pred.max(1)[1]
@@ -161,6 +162,13 @@ def convert_las_to_csv(path):
             csv_file.write(line)
 
 
+def write_sample_to_csv(path, sample):
+    with open(path, "w") as csv_file:
+        for item in sample:
+            X, Y, Z, label = item
+            csv_file.write(f"{X},{Y},{Z},{label}\n")
+
+
 def read_sample_from_csv(path):
     points = []
     labels = []
@@ -172,6 +180,65 @@ def read_sample_from_csv(path):
             labels.append(row[-1])
 
     return points, labels
+
+
+# --- DATA PROCESSING
+
+
+def balance_classes(sample):
+    labels = sample[:, -1]
+    label_distribution = Counter(labels)
+    average_num_points = int(np.mean(list(label_distribution.values())))
+    balanced_sample = []
+    
+    for label, count in label_distribution.items():
+        label_samples = sample[labels == label]
+        if count > average_num_points:
+            indices = np.random.choice(len(label_samples), size=average_num_points, replace=False)
+        else:
+            indices = np.random.choice(len(label_samples), size=average_num_points-count, replace=True)
+            balanced_sample.extend(label_samples) # Keep points that were already present
+        balanced_sample.extend(label_samples[indices])
+
+    return np.array(balanced_sample)
+
+
+def sample_random_rotation_z_axis(points, theta=None):
+    if theta is None:
+        theta = np.random.uniform(0, 360)
+
+    cos_val = np.cos(np.radians(theta))
+    sin_val = np.sin(np.radians(theta))
+
+    rotation_matrix = np.array([[cos_val, -sin_val, 0],
+                                [sin_val, cos_val, 0],
+                                [0, 0, 1]])  # Rotation matrix for Z-axis
+    
+    rotated_points = np.dot(points[:, :3], rotation_matrix)  # Apply rotation
+
+    return np.hstack((rotated_points, points[:, 3:]))  # Reattach labels
+
+
+def batch_random_rotation_z_axis(points):
+    """
+    Rotate points around the z-axis by a given angle.
+    points: tensor of shape (batch_size, num_points, 3) representing XYZ coordinates.
+    angle_degrees: rotation angle in degrees.
+    """
+    angle_degrees = np.random.uniform(0, 360)
+    angle_radians = torch.deg2rad(torch.tensor(angle_degrees, device=points.device))
+    cos_val = torch.cos(angle_radians)
+    sin_val = torch.sin(angle_radians)
+
+    # Rotation matrix for Z-axis rotation
+    rotation_matrix = torch.tensor([[cos_val, -sin_val, 0],
+                                    [sin_val, cos_val, 0],
+                                    [0, 0, 1]], device=points.device)
+    
+    # Apply rotation to each point set in the batch
+    points_rotated = torch.matmul(points, rotation_matrix)
+
+    return points_rotated
 
 
 # --- VISUALIZATION
@@ -223,14 +290,19 @@ def prepare_3d_subplot(ax, points, labels, verbose=True):
     # ax.view_init(90, 0)
 
 
-def visualize_sample(points, labels, save_to_file = "None", phase = "None"):
+def visualize_sample(points, labels, save_to_file = None, phase = "None"):
     fig = plt.figure(figsize=(15, 10))
     ax = fig.add_subplot(111, projection="3d")
     prepare_3d_subplot(ax, points, labels)
-    if phase == "Testing": plt.title("Predicted output")
+
+    if phase == "Testing":
+        plt.title("Predicted output")
     plt.tight_layout()
-    if save_to_file: plt.savefig(save_to_file)
-    else: plt.show()
+
+    if save_to_file:
+        plt.savefig(save_to_file)
+    else:
+        plt.show()
 
 
 def visualize_tile_by_path(path):

@@ -4,34 +4,11 @@ import laspy
 import numpy as np
 from collections import Counter
 
-def random_rotation_z_axis(points, theta=None):
-    #print(f"Points are: {points}")
-    if theta is None:
-        theta = np.random.uniform(0, 360)  # Random rotation angle
-    #print(f"Angle is {theta} deg")
-    cos_val = np.cos(np.radians(theta))
-    sin_val = np.sin(np.radians(theta))
-    rotation_matrix = np.array([[cos_val, -sin_val, 0],
-                                [sin_val, cos_val, 0],
-                                [0, 0, 1]])  # Rotation matrix for Z-axis
-    rotated_points = np.dot(points[:, :3], rotation_matrix)  # Apply rotation
-    #print(f"Rotated points are: {rotated_points}")
-    return np.hstack((rotated_points, points[:, 3:]))  # Reattach labels
-
-def balance_classes(sample):
-    labels = sample[:, -1]
-    label_distribution = Counter(labels)
-    average_num_points = int(np.mean(list(label_distribution.values())))
-    balanced_sample = []
-    for label, count in label_distribution.items():
-        label_samples = sample[labels == label]
-        if count > average_num_points:
-            indices = np.random.choice(len(label_samples), size=average_num_points, replace=False)
-        else:
-            indices = np.random.choice(len(label_samples), size=average_num_points-count, replace=True)
-            balanced_sample.extend(label_samples) # Keep points that were already present
-        balanced_sample.extend(label_samples[indices])
-    return np.array(balanced_sample)
+from utils import (
+    sample_random_rotation_z_axis,
+    balance_classes,
+    write_sample_to_csv
+)
 
 def exportSubsamples(idx, sample_type, divider, subsamples, theta):
     outdir = f"data/{sample_type}"
@@ -42,28 +19,25 @@ def exportSubsamples(idx, sample_type, divider, subsamples, theta):
         print(f"Directory '{outdir}' created successfully.")
 
     nsub = idx * divider**2
-    if sample_type == "train": nsub = nsub * 2
+    if sample_type == "train":
+        nsub = nsub * 2
+
     for i in range(len(subsamples)):
         for j in range(len(subsamples)):
             sample = np.array(subsamples[i][j])
+
             if len(sample) > 0:  # Check if sample is not empty
+
                 if sample_type == "train":
                     sample = balance_classes(sample)
-                    with open(f"{outdir}/{divider}_divisions_{nsub}.csv", "w") as csv_file:
-                        for item in sample:
-                            X, Y, Z, label = item
-                            csv_file.write(f"{X},{Y},{Z},{label}\n")
-                    rotated_sample = random_rotation_z_axis(sample)  # Apply the same rotation to all points
+                    write_sample_to_csv(f"{outdir}/{divider}_divisions_{nsub}.csv", sample)
                     nsub += 1
-                    with open(f"{outdir}/{divider}_divisions_{nsub}.csv", "w") as csv_file:
-                        for item in rotated_sample:
-                            X, Y, Z, label = item
-                            csv_file.write(f"{X},{Y},{Z},{label}\n")
-                else: #sample_type == test
-                    with open(f"{outdir}/{divider}_divisions_{nsub}.csv", "w") as csv_file:
-                        for item in sample:
-                            X, Y, Z, label = item
-                            csv_file.write(f"{X},{Y},{Z},{label}\n")
+                    rotated_sample = sample_random_rotation_z_axis(sample)  # Apply the same rotation to all points
+                    write_sample_to_csv(f"{outdir}/{divider}_divisions_{nsub}.csv", rotated_sample)
+
+                else: # sample_type == test
+                    write_sample_to_csv(f"{outdir}/{divider}_divisions_{nsub}.csv", sample)
+
             nsub += 1
 
 
