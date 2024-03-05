@@ -7,6 +7,7 @@ import numpy as np
 import seaborn as sns
 import torch
 from sklearn.metrics import confusion_matrix
+from collections import Counter
 
 
 # --- METRICS
