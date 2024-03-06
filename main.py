@@ -262,6 +262,8 @@ def main():
 
     # Plotting the results
     output_folder = "figures"
+    if not os.path.exists(output_folder):
+        os.makedirs(output_folder)
 
     plot_losses(
         train_loss,
