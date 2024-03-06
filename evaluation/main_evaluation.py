@@ -124,6 +124,9 @@ def main():
     # Plotting the results
     output_folder = "figures"
 
+    if not os.path.exists(output_folder):
+        os.makedirs(output_folder)
+
     #class_names = [f"Class {i}" for i in range(NUM_CLASSES)]
     class_names = ["Others", "Ground", "Vegetation", "Cars",
                    "Trucks", "Powerlines","Fences", "Poles",

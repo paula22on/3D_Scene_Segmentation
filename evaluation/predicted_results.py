@@ -78,6 +78,12 @@ def main():
     output_folder = "predicted"
     input_folder = "original"
 
+    if not os.path.exists(output_folder):
+        os.makedirs(output_folder)
+
+    if not os.path.exists(input_folder):
+        os.makedirs(input_folder)
+
     with torch.no_grad():
         idx = 0
         for points, labels in test_dataloader:
