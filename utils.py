@@ -280,7 +280,7 @@ def prepare_3d_subplot(ax, points, labels, verbose=True):
         3: "purple",  # Cars
         4: "orange",  # Trucks
         5: "yellow",  # Powerlines
-        6: "white",  # Fences
+        6: "black",  # Fences
         7: "pink",  # Poles
         8: "red",  # Buildings
     }

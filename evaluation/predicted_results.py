@@ -25,7 +25,7 @@ from utils import (
 
 SEGMENTATION = True
 WEIGHTED_LOSS = False
-NUM_POINTS = 2048
+NUM_POINTS = 4096
 NUM_CLASSES = 9
 
 def main(): 

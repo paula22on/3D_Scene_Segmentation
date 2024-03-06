@@ -285,7 +285,9 @@ def main():
         save_to_file=os.path.join(output_folder, "iou_plot" + str(NUM_POINTS) + ".png"),
     )
 
-    class_names = [f"Class {i}" for i in range(NUM_CLASSES)]
+    class_names = ["Others", "Ground", "Vegetation", "Cars",
+                   "Trucks", "Powerlines","Fences", "Poles",
+                   "Buildings"]
 
     # training
     plot_iou_per_class(
