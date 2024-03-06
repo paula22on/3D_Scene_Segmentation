@@ -54,7 +54,7 @@ class MyDataset(Dataset):
             for file in os.listdir(self.samples_path):
                 if file.endswith(".csv"):
                     sample_path = os.path.join(self.samples_path, file)
-                    sample_df = pd.read_csv(sample_path, dtype=int)
+                    sample_df = pd.read_csv(sample_path, dtype=float)
                     labels = sample_df.iloc[:, 3].values
                     label_distribution.update(labels)
 
