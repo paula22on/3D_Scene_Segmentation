@@ -132,7 +132,7 @@ def main():
             optimizer.step()
 
             print(
-                f"Training - Epoch {epoch}, Batch {i}: Train Loss: {loss.item()}, Train Acc: {acc}"
+                f"Training - Epoch {epoch}, Batch {i}: Train Loss: {loss.item()}, Train Acc: {acc}, Train IoU {mean_iou}"
             )
 
         epoch_val_loss = []
