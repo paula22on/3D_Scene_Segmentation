@@ -101,6 +101,7 @@ def main():
         epoch_train_loss = []
         epoch_train_acc = []
         epoch_train_iou = []
+        epoch_train_iou_per_class = {i: [] for i in range(NUM_CLASSES)}
 
         # Training Loop
         for i, data in enumerate(train_dataloader):
@@ -124,7 +125,7 @@ def main():
             ious, mean_iou = calculate_iou(pred, labels, NUM_CLASSES)
             epoch_train_iou.append(mean_iou)
             for cls in range(NUM_CLASSES):
-                train_iou_per_class[cls].append(ious[cls])
+                epoch_train_iou_per_class[cls].append(ious[cls])
 
             # Backward pass and optimize
             loss.backward()
@@ -137,6 +138,7 @@ def main():
         epoch_val_loss = []
         epoch_val_acc = []
         epoch_val_iou = []
+        epoch_val_iou_per_class = {i: [] for i in range(NUM_CLASSES)}
 
         # Validation Loop
         with torch.no_grad():
@@ -154,6 +156,8 @@ def main():
                 # Caclulate IoU and append to epoch_val_iou
                 ious, mean_iou = calculate_iou(pred, labels, NUM_CLASSES)
                 epoch_val_iou.append(mean_iou)
+                for cls in range(NUM_CLASSES):
+                    epoch_val_iou_per_class[cls].append(ious[cls])
 
             print(
                 "Epoch %s: train loss: %s, val loss: %f, train accuracy: %s,  val accuracy: %f, train IoU %s,  val IoU: %f"
@@ -190,6 +194,10 @@ def main():
         test_acc.append(np.mean(epoch_val_acc))
         train_iou.append(np.mean(epoch_train_iou))
         test_iou.append(np.mean(epoch_val_iou))
+        for cls in range(NUM_CLASSES):
+                train_iou_per_class[cls].append(np.mean(epoch_train_iou_per_class[cls]))
+                test_iou_per_class[cls].append(np.mean(epoch_val_iou_per_class[cls]))
+        
 
         print(
             f"Epoch {epoch}: Train Loss: {train_loss[-1]}, "
@@ -208,6 +216,7 @@ def main():
     epoch_test_acc = []
     epoch_test_iou = []
     total_confusion_matrix = np.zeros((NUM_CLASSES, NUM_CLASSES))
+    epoch_test_iou_per_class = {i: [] for i in range(NUM_CLASSES)}
 
     with torch.no_grad():
         for points, labels in test_dataloader:
@@ -222,7 +231,7 @@ def main():
             ious, mean_iou = calculate_iou(pred, labels, NUM_CLASSES)
             epoch_test_iou.append(mean_iou)
             for cls in range(NUM_CLASSES):
-                test_iou_per_class[cls].append(ious[cls])
+                epoch_test_iou_per_class[cls].append(ious[cls])
 
             # CONFUSION MATRIX
             batch_confusion_matrix = compute_confusion_matrix(
@@ -235,6 +244,9 @@ def main():
     average_test_loss = sum(epoch_test_loss) / len(epoch_test_loss)
     average_test_accuracy = sum(epoch_test_acc) / len(epoch_test_acc)
     average_test_iou = sum(epoch_test_iou) / len(epoch_test_iou)
+    avg_test_iou_per_class = {i: [] for i in range(NUM_CLASSES)}
+    for cls in range(NUM_CLASSES):
+                avg_test_iou_per_class[cls].append(np.mean(epoch_test_iou_per_class[cls]))
 
     # Print the results
     print(
@@ -293,10 +305,16 @@ def main():
     )
 
     #save ious per class
-    iou_class_file = open("iou_class.txt", "a")
-    for cls, ious in train_iou_per_class.items():
-        iou_mean_per_class = np.mean(ious)
-        iou_class_file.write(f"{class_names[cls]}: avg_iou = {iou_mean_per_class:.4f}, final_iou = {ious[-1]:.4f}\n")
+    iou_class_file = open("train_iou_class.txt", "a")
+    for cls, iou in train_iou_per_class.items():
+        iou_class_file.write(f"{class_names[cls]}: iou = {iou[-1]:.4f}\n")
+        iou_class_file.flush()
+    iou_class_file.close()
+
+        #save ious per class
+    iou_class_file = open("test_iou_class.txt", "a")
+    for cls, iou in train_iou_per_class.items():
+        iou_class_file.write(f"{class_names[cls]}: iou = {iou[-1]:.4f}\n")
         iou_class_file.flush()
     iou_class_file.close()
 
