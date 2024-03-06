@@ -313,7 +313,7 @@ def main():
 
         #save ious per class
     iou_class_file = open("test_iou_class.txt", "a")
-    for cls, iou in train_iou_per_class.items():
+    for cls, iou in test_iou_per_class.items():
         iou_class_file.write(f"{class_names[cls]}: iou = {iou[-1]:.4f}\n")
         iou_class_file.flush()
     iou_class_file.close()
