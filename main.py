@@ -12,6 +12,7 @@ from tqdm import tqdm
 from dataset import MyDataset
 from model import ClassificationPointNet, SegmentationPointNet
 from utils import (
+    batch_random_rotation_z_axis,
     calculate_iou,
     compute_accuracy,
     compute_confusion_matrix,
@@ -20,18 +21,19 @@ from utils import (
     plot_IoU,
     plot_iou_per_class,
     plot_losses,
-    batch_random_rotation_z_axis,
 )
 
 SEGMENTATION = True
 WEIGHTED_LOSS = False
 NUM_POINTS = 2048
 NUM_CLASSES = 9
+
+
 def main():
     train_dataset = MyDataset("data", NUM_POINTS, "train")
     test_dataset = MyDataset("data", NUM_POINTS, "test")
 
-      # Calculate weighted loss -- New code it may break here
+    # Calculate weighted loss -- New code it may break here
     if WEIGHTED_LOSS:
         class_weights = (
             train_dataset.calculate_class_weights()
@@ -46,17 +48,22 @@ def main():
     else:
         criterion = torch.nn.NLLLoss()
 
-        
     total_length = len(train_dataset)
     train_length = int(total_length * 0.75)
     val_length = total_length - train_length
-    train_dataset, val_dataset = torch.utils.data.random_split(train_dataset, [train_length, val_length])
+    train_dataset, val_dataset = torch.utils.data.random_split(
+        train_dataset, [train_length, val_length]
+    )
 
-
-    train_dataloader = DataLoader(train_dataset, batch_size=32, shuffle=True, num_workers=4)
-    val_dataloader = DataLoader(val_dataset, batch_size=32, shuffle=False, num_workers=4)
-    test_dataloader = DataLoader(test_dataset, batch_size=32, shuffle=False, num_workers=4)
-
+    train_dataloader = DataLoader(
+        train_dataset, batch_size=32, shuffle=True, num_workers=4
+    )
+    val_dataloader = DataLoader(
+        val_dataset, batch_size=32, shuffle=False, num_workers=4
+    )
+    test_dataloader = DataLoader(
+        test_dataset, batch_size=32, shuffle=False, num_workers=4
+    )
 
     if SEGMENTATION:
         model = SegmentationPointNet(num_classes=NUM_CLASSES, point_dimension=3)
@@ -184,7 +191,9 @@ def main():
             state = {"model": model.state_dict(), "optimizer": optimizer.state_dict()}
             torch.save(
                 state,
-                os.path.join(checkpoint_dir, f"segmentation_checkpoint_epoch_{epoch}.pth"),
+                os.path.join(
+                    checkpoint_dir, f"segmentation_checkpoint_epoch_{epoch}.pth"
+                ),
             )
 
         # Logging
@@ -195,9 +204,8 @@ def main():
         train_iou.append(np.mean(epoch_train_iou))
         test_iou.append(np.mean(epoch_val_iou))
         for cls in range(NUM_CLASSES):
-                train_iou_per_class[cls].append(np.mean(epoch_train_iou_per_class[cls]))
-                test_iou_per_class[cls].append(np.mean(epoch_val_iou_per_class[cls]))
-        
+            train_iou_per_class[cls].append(np.mean(epoch_train_iou_per_class[cls]))
+            test_iou_per_class[cls].append(np.mean(epoch_val_iou_per_class[cls]))
 
         print(
             f"Epoch {epoch}: Train Loss: {train_loss[-1]}, "
@@ -239,14 +247,13 @@ def main():
             )
             total_confusion_matrix += batch_confusion_matrix
 
-
     # After completing the loop over the test_dataloader
     average_test_loss = sum(epoch_test_loss) / len(epoch_test_loss)
     average_test_accuracy = sum(epoch_test_acc) / len(epoch_test_acc)
     average_test_iou = sum(epoch_test_iou) / len(epoch_test_iou)
     avg_test_iou_per_class = {i: [] for i in range(NUM_CLASSES)}
     for cls in range(NUM_CLASSES):
-                avg_test_iou_per_class[cls].append(np.mean(epoch_test_iou_per_class[cls]))
+        avg_test_iou_per_class[cls].append(np.mean(epoch_test_iou_per_class[cls]))
 
     # Print the results
     print(
@@ -259,7 +266,9 @@ def main():
     plot_losses(
         train_loss,
         test_loss,
-        save_to_file=os.path.join(output_folder, "loss_plot" + str(NUM_POINTS) + ".png"),
+        save_to_file=os.path.join(
+            output_folder, "loss_plot" + str(NUM_POINTS) + ".png"
+        ),
     )
     plot_accuracies(
         train_acc,
@@ -304,19 +313,20 @@ def main():
         ),
     )
 
-    #save ious per class
+    # save ious per class
     iou_class_file = open("train_iou_class.txt", "a")
     for cls, iou in train_iou_per_class.items():
         iou_class_file.write(f"{class_names[cls]}: iou = {iou[-1]:.4f}\n")
         iou_class_file.flush()
     iou_class_file.close()
 
-        #save ious per class
+    # save ious per class
     iou_class_file = open("test_iou_class.txt", "a")
     for cls, iou in test_iou_per_class.items():
         iou_class_file.write(f"{class_names[cls]}: iou = {iou[-1]:.4f}\n")
         iou_class_file.flush()
     iou_class_file.close()
+
 
 if __name__ == "__main__":
     main()

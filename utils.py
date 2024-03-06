@@ -1,5 +1,6 @@
 import csv
 import math
+from collections import Counter
 
 import laspy
 import matplotlib.pyplot as plt
@@ -7,10 +8,9 @@ import numpy as np
 import seaborn as sns
 import torch
 from sklearn.metrics import confusion_matrix
-from collections import Counter
-
 
 # --- METRICS
+
 
 def compute_accuracy(pred, target):
     """Computes accuracy of the segmentation"""
@@ -120,23 +120,32 @@ def plot_iou_per_class(iou_per_class, class_names, phase="Testing", save_to_file
     for cls, ious in iou_per_class.items():
         plt.plot(epochs, ious, label=f"{class_names[cls]}")
 
-    if phase=="Testing": plt.title(f"{phase} IoU per Class Over Evaluation")
-    else: plt.title(f"{phase} IoU per Class Over Epochs")
-    if phase=="Testing":plt.xlabel("Batch")
-    else: plt.xlabel("Epoch")
+    if phase == "Testing":
+        plt.title(f"{phase} IoU per Class Over Evaluation")
+    else:
+        plt.title(f"{phase} IoU per Class Over Epochs")
+    if phase == "Testing":
+        plt.xlabel("Batch")
+    else:
+        plt.xlabel("Epoch")
     plt.ylabel("IoU")
     plt.legend()
     plt.grid(True)
 
     if save_to_file:
         plt.savefig(save_to_file)
-    else: plt.show()
+    else:
+        plt.show()
 
 
 def plot_confusion_matrix(total_confusion_matrix, class_names, save_to_file=None):
     fig = plt.figure(figsize=(10, 7))
     sns.heatmap(
-        np.round((total_confusion_matrix / total_confusion_matrix.sum(axis=1, keepdims=True))*100, 2),
+        np.round(
+            (total_confusion_matrix / total_confusion_matrix.sum(axis=1, keepdims=True))
+            * 100,
+            2,
+        ),
         annot=True,
         fmt=".2f",
         cmap="Blues",
@@ -191,14 +200,20 @@ def balance_classes(sample):
     label_distribution = Counter(labels)
     average_num_points = int(np.mean(list(label_distribution.values())))
     balanced_sample = []
-    
+
     for label, count in label_distribution.items():
         label_samples = sample[labels == label]
         if count > average_num_points:
-            indices = np.random.choice(len(label_samples), size=average_num_points, replace=False)
+            indices = np.random.choice(
+                len(label_samples), size=average_num_points, replace=False
+            )
         else:
-            indices = np.random.choice(len(label_samples), size=average_num_points-count, replace=True)
-            balanced_sample.extend(label_samples) # Keep points that were already present
+            indices = np.random.choice(
+                len(label_samples), size=average_num_points - count, replace=True
+            )
+            balanced_sample.extend(
+                label_samples
+            )  # Keep points that were already present
         balanced_sample.extend(label_samples[indices])
 
     return np.array(balanced_sample)
@@ -211,10 +226,10 @@ def sample_random_rotation_z_axis(points, theta=None):
     cos_val = np.cos(np.radians(theta))
     sin_val = np.sin(np.radians(theta))
 
-    rotation_matrix = np.array([[cos_val, -sin_val, 0],
-                                [sin_val, cos_val, 0],
-                                [0, 0, 1]])  # Rotation matrix for Z-axis
-    
+    rotation_matrix = np.array(
+        [[cos_val, -sin_val, 0], [sin_val, cos_val, 0], [0, 0, 1]]
+    )  # Rotation matrix for Z-axis
+
     rotated_points = np.dot(points[:, :3], rotation_matrix)  # Apply rotation
 
     return np.hstack((rotated_points, points[:, 3:]))  # Reattach labels
@@ -232,10 +247,10 @@ def batch_random_rotation_z_axis(points):
     sin_val = torch.sin(angle_radians)
 
     # Rotation matrix for Z-axis rotation
-    rotation_matrix = torch.tensor([[cos_val, -sin_val, 0],
-                                    [sin_val, cos_val, 0],
-                                    [0, 0, 1]], device=points.device)
-    
+    rotation_matrix = torch.tensor(
+        [[cos_val, -sin_val, 0], [sin_val, cos_val, 0], [0, 0, 1]], device=points.device
+    )
+
     # Apply rotation to each point set in the batch
     points_rotated = torch.matmul(points, rotation_matrix)
 
@@ -260,14 +275,14 @@ def prepare_3d_subplot(ax, points, labels, verbose=True):
     Z = np.array(Z)
     L = np.array(L)
     cdict = {
-        1: "blue",   # Ground
+        1: "blue",  # Ground
         2: "green",  # Vegetation
-        3: "purple", # Cars
-        4: "orange", # Trucks
-        5: "yellow", # Powerlines
+        3: "purple",  # Cars
+        4: "orange",  # Trucks
+        5: "yellow",  # Powerlines
         6: "white",  # Fences
-        7: "pink",   # Poles
-        8: "red",    # Buildings
+        7: "pink",  # Poles
+        8: "red",  # Buildings
     }
     for classification in np.unique(L)[1:]:
         color = cdict.get(classification, "black")
@@ -291,7 +306,7 @@ def prepare_3d_subplot(ax, points, labels, verbose=True):
     # ax.view_init(90, 0)
 
 
-def visualize_sample(points, labels, save_to_file = None, phase = "None"):
+def visualize_sample(points, labels, save_to_file=None, phase="None"):
     fig = plt.figure(figsize=(15, 10))
     ax = fig.add_subplot(111, projection="3d")
     prepare_3d_subplot(ax, points, labels)

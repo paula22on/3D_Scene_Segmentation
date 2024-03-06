@@ -35,10 +35,10 @@ class TransformationNet(nn.Module):
         x = F.relu(self.bn_2(self.conv_2(x)))
         x = F.relu(self.bn_3(self.conv_3(x)))
 
-        #x = nn.MaxPool1d(num_points)(x)
-        #x = x.view(-1, 1024)
+        # x = nn.MaxPool1d(num_points)(x)
+        # x = x.view(-1, 1024)
         x, _ = torch.max(x, 2, keepdim=True)
-        x = x.view(-1, 1024)        
+        x = x.view(-1, 1024)
 
         x = F.relu(self.bn_4(self.fc_1(x)))
         x = F.relu(self.bn_5(self.fc_2(x)))
@@ -50,10 +50,12 @@ class TransformationNet(nn.Module):
         ####x = x.view(-1, self.output_dim, self.output_dim) + identity_matrix
         ####return x
         identity_matrix = torch.eye(self.output_dim).unsqueeze(0).to(x.device)
-        identity_matrix = identity_matrix.repeat(x.size(0), 1, 1)  # Repeat for each item in the batch
+        identity_matrix = identity_matrix.repeat(
+            x.size(0), 1, 1
+        )  # Repeat for each item in the batch
         x = x.view(-1, self.output_dim, self.output_dim) + identity_matrix
         return x
-        
+
 
 class BasePointNet(nn.Module):
     def __init__(self, point_dimension, segmentation=True):
@@ -61,7 +63,9 @@ class BasePointNet(nn.Module):
 
         self.segmentation = segmentation
 
-        self.input_transform = TransformationNet(input_dim=point_dimension, output_dim=point_dimension)
+        self.input_transform = TransformationNet(
+            input_dim=point_dimension, output_dim=point_dimension
+        )
         self.feature_transform = TransformationNet(input_dim=64, output_dim=64)
 
         # Added more layers and increased dimensions for enhanced model capacity
@@ -77,8 +81,8 @@ class BasePointNet(nn.Module):
         self.bn_4 = nn.BatchNorm1d(256)
         self.bn_5 = nn.BatchNorm1d(1024)  # Adjusted accordingly
 
-    def forward(self, x): 
-        
+    def forward(self, x):
+
         segmentation = self.segmentation
 
         if segmentation:
@@ -174,7 +178,9 @@ class SegmentationPointNet(nn.Module):
         )  # we transpose to [batch_size, num_features, num_points] to match BasePointNet
         #  Shape of x after transpose: torch.Size([32, 3, 500])
 
-        global_features, feature_transform, per_point_features, _ = self.base_pointnet(x)
+        global_features, feature_transform, per_point_features, _ = self.base_pointnet(
+            x
+        )
         # Shape of global_features: torch.Size([32, 256])
         # Shape of feature_transform: torch.Size([32, 64, 64])
         # Shape of per_point_features: torch.Size([32, 500, 64])
