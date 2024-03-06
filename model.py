@@ -2,29 +2,27 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 
-# inspiration: https://github.com/itberrios/3D/blob/main/point_net/point_net.py
-
 
 class TransformationNet(nn.Module):
     def __init__(self, input_dim, output_dim):
         super(TransformationNet, self).__init__()
         self.output_dim = output_dim
 
-        # Increased model capacity by adding more layers and units per layer
+        # You can increase/decrease model capacity by adding/deleting layers and units per layer
         self.conv_1 = nn.Conv1d(input_dim, 64, 1)
         self.conv_2 = nn.Conv1d(64, 128, 1)
-        self.conv_3 = nn.Conv1d(128, 1024, 1)  # Increased from 256 to 1024
+        self.conv_3 = nn.Conv1d(128, 1024, 1)
 
         self.bn_1 = nn.BatchNorm1d(64)
         self.bn_2 = nn.BatchNorm1d(128)
-        self.bn_3 = nn.BatchNorm1d(1024)  # Adjusted accordingly
+        self.bn_3 = nn.BatchNorm1d(1024)
 
-        self.fc_1 = nn.Linear(1024, 512)  # Increased from 256 to 512
-        self.fc_2 = nn.Linear(512, 256)  # Increased from 128 to 256
+        self.fc_1 = nn.Linear(1024, 512)
+        self.fc_2 = nn.Linear(512, 256)
         self.fc_3 = nn.Linear(256, self.output_dim * self.output_dim)
 
         # Adjusted batch normalization layers to match new dimensions
-        self.bn_4 = nn.BatchNorm1d(512)  # New layer
+        self.bn_4 = nn.BatchNorm1d(512)
         self.bn_5 = nn.BatchNorm1d(256)
 
     def forward(self, x):
@@ -35,8 +33,6 @@ class TransformationNet(nn.Module):
         x = F.relu(self.bn_2(self.conv_2(x)))
         x = F.relu(self.bn_3(self.conv_3(x)))
 
-        # x = nn.MaxPool1d(num_points)(x)
-        # x = x.view(-1, 1024)
         x, _ = torch.max(x, 2, keepdim=True)
         x = x.view(-1, 1024)
 
@@ -44,11 +40,6 @@ class TransformationNet(nn.Module):
         x = F.relu(self.bn_5(self.fc_2(x)))
         x = self.fc_3(x)
 
-        ####identity_matrix = torch.eye(self.output_dim)
-        # if torch.cuda.is_available():
-        # identity_matrix = identity_matrix.cuda()
-        ####x = x.view(-1, self.output_dim, self.output_dim) + identity_matrix
-        ####return x
         identity_matrix = torch.eye(self.output_dim).unsqueeze(0).to(x.device)
         identity_matrix = identity_matrix.repeat(
             x.size(0), 1, 1
@@ -68,18 +59,17 @@ class BasePointNet(nn.Module):
         )
         self.feature_transform = TransformationNet(input_dim=64, output_dim=64)
 
-        # Added more layers and increased dimensions for enhanced model capacity
         self.conv_1 = nn.Conv1d(point_dimension, 64, 1)
-        self.conv_2 = nn.Conv1d(64, 64, 1)  # New layer
-        self.conv_3 = nn.Conv1d(64, 128, 1)  # Adjusted for additional layer
-        self.conv_4 = nn.Conv1d(128, 256, 1)  # Adjusted for additional layer
-        self.conv_5 = nn.Conv1d(256, 1024, 1)  # Increased dimension
+        self.conv_2 = nn.Conv1d(64, 64, 1)
+        self.conv_3 = nn.Conv1d(64, 128, 1)
+        self.conv_4 = nn.Conv1d(128, 256, 1)
+        self.conv_5 = nn.Conv1d(256, 1024, 1)
 
         self.bn_1 = nn.BatchNorm1d(64)
         self.bn_2 = nn.BatchNorm1d(64)
-        self.bn_3 = nn.BatchNorm1d(128)  # Adjusted accordingly
+        self.bn_3 = nn.BatchNorm1d(128)
         self.bn_4 = nn.BatchNorm1d(256)
-        self.bn_5 = nn.BatchNorm1d(1024)  # Adjusted accordingly
+        self.bn_5 = nn.BatchNorm1d(1024)
 
     def forward(self, x):
 
@@ -196,7 +186,6 @@ class SegmentationPointNet(nn.Module):
 
         # Concatenate global features with per-point features
         x = torch.cat([per_point_features, global_features_expanded], 1)
-        # Shape of x after concatenation: torch.Size([32, 320, 500])
 
         # Additional layers for segmentation
         x = F.relu(self.bn_1(self.conv_1(x)))
