@@ -1,14 +1,21 @@
-import csv
 import os
 
-import matplotlib.pyplot as plt
 import numpy as np
-import pandas as pd
 import torch
 import torch.optim as optim
 from torch.utils.data import DataLoader
 from tqdm import tqdm
 
+from config import (
+    CHECKPOINT_DIRECTORY,
+    FIGURES_DIRECTORY,
+    NUM_CLASSES,
+    NUM_CLASSES_CLASSIFICATION,
+    NUM_POINTS,
+    RANDOM_ROTATION_IN_BATCH,
+    SEGMENTATION,
+    WEIGHTED_LOSS,
+)
 from dataset import MyDataset
 from model import ClassificationPointNet, SegmentationPointNet
 from utils import (
@@ -23,31 +30,32 @@ from utils import (
     plot_losses,
 )
 
-SEGMENTATION = True
-WEIGHTED_LOSS = False
-NUM_POINTS = 2048
-NUM_CLASSES = 9
-
 
 def main():
+    # Prepare datasets for training, validation, and testing.
     train_dataset = MyDataset("data", NUM_POINTS, "train")
     test_dataset = MyDataset("data", NUM_POINTS, "test")
 
-    # Calculate weighted loss -- New code it may break here
+    # Option to use weighted loss for dealing with imbalanced classes.
     if WEIGHTED_LOSS:
         class_weights = (
             train_dataset.calculate_class_weights()
-        )  # get weight from MyDataset function
+        )  # Calculate class weights
         class_weights_tensor = torch.tensor(
             class_weights, dtype=torch.float
-        )  # convert numpy to tensor
+        )  # Convert to tensor
         if torch.cuda.is_available():
-            class_weights_tensor = class_weights_tensor.cuda()
+            class_weights_tensor = (
+                class_weights_tensor.cuda()
+            )  # Move to GPU if available
 
         criterion = torch.nn.CrossEntropyLoss(weight=class_weights_tensor)
     else:
-        criterion = torch.nn.NLLLoss()
+        criterion = (
+            torch.nn.NLLLoss()
+        )  # Use Negative Log Likelihood Loss if weighted loss is not enabled
 
+    # Split the training dataset into training and validation sets.
     total_length = len(train_dataset)
     train_length = int(total_length * 0.75)
     val_length = total_length - train_length
@@ -55,6 +63,7 @@ def main():
         train_dataset, [train_length, val_length]
     )
 
+    # Prepare data loaders for training, validation, and testing phases.
     train_dataloader = DataLoader(
         train_dataset, batch_size=32, shuffle=True, num_workers=4
     )
@@ -65,29 +74,32 @@ def main():
         test_dataset, batch_size=32, shuffle=False, num_workers=4
     )
 
+    # Initialize the model based on the task (segmentation or classification).
     if SEGMENTATION:
         model = SegmentationPointNet(num_classes=NUM_CLASSES, point_dimension=3)
     else:
         model = ClassificationPointNet(
-            num_classes=16, point_dimension=3, segmentation=False
+            num_classes=NUM_CLASSES_CLASSIFICATION,
+            point_dimension=3,
+            segmentation=False,
         )
 
+    # Move model to GPU if available, else use CPU.
     if torch.cuda.is_available():
         model.cuda()
         device = "cuda"
     else:
         device = "cpu"
 
+    # Set up the optimizer for model parameters.
     optimizer = optim.Adam(model.parameters(), lr=0.001)
 
-    checkpoint_dir = "checkpoints-segmentation"
+    # Ensure the checkpoint directory exists.
+    checkpoint_dir = CHECKPOINT_DIRECTORY
     if not os.path.exists(checkpoint_dir):
         os.makedirs(checkpoint_dir)
 
-    iou_log_file = open("iou_log.txt", "a")
-
-    # ---- All above code works! Currently testing...
-    # Training and Evaluation Loop
+    # Initialize variables for logging and tracking progress.
     epochs = 80
     train_loss = []
     test_loss = []
@@ -95,16 +107,18 @@ def main():
     test_acc = []
     train_iou = []
     test_iou = []
-    best_loss = np.inf
+    best_loss = np.inf  # Track the best loss for model saving
     train_iou_per_class = {
         i: [] for i in range(NUM_CLASSES)
-    }  # For storing training IoU per class
+    }  # IoU per class for training
     test_iou_per_class = {
         i: [] for i in range(NUM_CLASSES)
-    }  # For storing validation/testing IoU per class
+    }  # IoU per class for testing/validation
+    iou_log_file = open("iou_log.txt", "a")  # File to log IoU over epochs
 
+    # Training and validation loop
     for epoch in tqdm(range(epochs)):
-        model.train()
+        model.train()  # Set model to training mode
         epoch_train_loss = []
         epoch_train_acc = []
         epoch_train_iou = []
@@ -112,19 +126,21 @@ def main():
 
         # Training Loop
         for i, data in enumerate(train_dataloader):
-            points, labels = data
-            points, labels = points.to(device), labels.to(device)
-            points = batch_random_rotation_z_axis(points)
+            points, labels = data  # Unpack data
+            points, labels = points.to(device), labels.to(
+                device
+            )  # Move data to the appropriate device
+            if RANDOM_ROTATION_IN_BATCH:
+                points = batch_random_rotation_z_axis(points)  # Data augmentation
 
-            optimizer.zero_grad()
+            optimizer.zero_grad()  # Clear gradients
 
             # Forward pass
             pred, _ = model(points)
-
-            loss = criterion(pred, labels)
+            loss = criterion(pred, labels)  # Compute loss
             epoch_train_loss.append(loss.item())
 
-            # Accuracy Calculation for Segmentation
+            # Compute accuracy and IoU for segmentation tasks
             acc = compute_accuracy(pred, labels)
             epoch_train_acc.append(acc)
 
@@ -196,7 +212,7 @@ def main():
                 ),
             )
 
-        # Logging
+        # Update logging lists for plotting later
         train_loss.append(np.mean(epoch_train_loss))
         test_loss.append(np.mean(epoch_val_loss))
         train_acc.append(np.mean(epoch_train_acc))
@@ -216,15 +232,20 @@ def main():
             f"Val IoU: {test_iou[-1]}"
         )
 
+    # Close the IoU log file
     iou_log_file.close()
 
-    # Testing our model
-    model.eval()
+    # Testing phase: Evaluate the model on the test dataset to measure its performance.
+    model.eval()  # Set model to evaluation mode
     epoch_test_loss = []
     epoch_test_acc = []
     epoch_test_iou = []
-    total_confusion_matrix = np.zeros((NUM_CLASSES, NUM_CLASSES))
-    epoch_test_iou_per_class = {i: [] for i in range(NUM_CLASSES)}
+    total_confusion_matrix = np.zeros(
+        (NUM_CLASSES, NUM_CLASSES)
+    )  # Initialize confusion matrix
+    epoch_test_iou_per_class = {
+        i: [] for i in range(NUM_CLASSES)
+    }  # Initialize IoU per class tracking
 
     with torch.no_grad():
         for points, labels in test_dataloader:
@@ -233,15 +254,17 @@ def main():
             loss = criterion(pred, labels)
             epoch_test_loss.append(loss.item())
 
+            # Compute accuracy
             acc = compute_accuracy(pred, labels)
             epoch_test_acc.append(acc)
 
+            # Compute IoU
             ious, mean_iou = calculate_iou(pred, labels, NUM_CLASSES)
             epoch_test_iou.append(mean_iou)
             for cls in range(NUM_CLASSES):
                 epoch_test_iou_per_class[cls].append(ious[cls])
 
-            # CONFUSION MATRIX
+            # Confusion matrix
             batch_confusion_matrix = compute_confusion_matrix(
                 total_confusion_matrix, pred, labels, NUM_CLASSES
             )
@@ -261,7 +284,7 @@ def main():
     )
 
     # Plotting the results
-    output_folder = "figures"
+    output_folder = FIGURES_DIRECTORY
     if not os.path.exists(output_folder):
         os.makedirs(output_folder)
 
@@ -285,12 +308,19 @@ def main():
         save_to_file=os.path.join(output_folder, "iou_plot" + str(NUM_POINTS) + ".png"),
     )
 
-    class_names = ["Others", "Ground", "Vegetation", "Cars",
-                   "Trucks", "Powerlines","Fences", "Poles",
-                   "Buildings"]
+    class_names = [
+        "Others",
+        "Ground",
+        "Vegetation",
+        "Cars",
+        "Trucks",
+        "Powerlines",
+        "Fences",
+        "Poles",
+        "Buildings",
+    ]
 
-    # training
-    plot_iou_per_class(
+    plot_iou_per_class(  # Training IoU plot
         train_iou_per_class,
         class_names,
         phase="Training",
@@ -299,8 +329,7 @@ def main():
         ),
     )
 
-    # testing
-    plot_iou_per_class(
+    plot_iou_per_class(  # Testing IoU plot
         test_iou_per_class,
         class_names,
         phase="Testing",
@@ -317,14 +346,14 @@ def main():
         ),
     )
 
-    # save ious per class
+    # Save ious per class in train
     iou_class_file = open("train_iou_class.txt", "a")
     for cls, iou in train_iou_per_class.items():
         iou_class_file.write(f"{class_names[cls]}: iou = {iou[-1]:.4f}\n")
         iou_class_file.flush()
     iou_class_file.close()
 
-    # save ious per class
+    # Save ious per classin test
     iou_class_file = open("test_iou_class.txt", "a")
     for cls, iou in test_iou_per_class.items():
         iou_class_file.write(f"{class_names[cls]}: iou = {iou[-1]:.4f}\n")
