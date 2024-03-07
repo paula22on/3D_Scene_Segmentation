@@ -23,13 +23,13 @@ from utils import (
 )
 
 SEGMENTATION = True
-WEIGHTED_LOSS = True
+WEIGHTED_LOSS = False
 NUM_POINTS = 2048
 NUM_CLASSES = 9
 
 def main(): 
-    train_dataset = MyDataset("data/train", NUM_POINTS, "train")
-    test_dataset = MyDataset("data/test", NUM_POINTS, "test")
+    train_dataset = MyDataset("data", NUM_POINTS, "train")
+    test_dataset = MyDataset("data", NUM_POINTS, "test")
 
         # Calculate weighted loss -- New code it may break here
     if WEIGHTED_LOSS:
@@ -45,16 +45,6 @@ def main():
         criterion = torch.nn.CrossEntropyLoss(weight=class_weights_tensor)
     else:
         criterion = torch.nn.NLLLoss()
-
-        
-    total_length = len(train_dataset)
-    train_length = int(total_length * 0.75)
-    val_length = total_length - train_length
-    train_dataset, val_dataset = torch.utils.data.random_split(train_dataset, [train_length, val_length])
-
-
-    train_dataloader = DataLoader(train_dataset, batch_size=32, shuffle=True, num_workers=4)
-    val_dataloader = DataLoader(val_dataset, batch_size=32, shuffle=False, num_workers=4)
     test_dataloader = DataLoader(test_dataset, batch_size=32, shuffle=False, num_workers=4)
 
 
@@ -147,7 +137,7 @@ def main():
         class_names,
         save_to_file=os.path.join(
             output_folder, "confmatrix_plot" + str(NUM_POINTS) + ".png"
-        ),
+        )
     )
 
 if __name__ == "__main__":
