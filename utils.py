@@ -9,11 +9,19 @@ import seaborn as sns
 import torch
 from sklearn.metrics import confusion_matrix
 
+
 # --- METRICS
-
-
 def compute_accuracy(pred, target):
-    """Computes accuracy of the segmentation"""
+    """
+    Computes the accuracy of segmentation predictions.
+
+    Parameters:
+        pred (torch.Tensor): The predicted labels for each pixel or point, assuming the shape [batch_size, n_classes, height, width].
+        target (torch.Tensor): The ground truth labels with shape [batch_size, height, width].
+
+    Returns:
+        float: The computed accuracy.
+    """
     pred_choice = pred.max(1)[1]
     correct = pred_choice.eq(target.data).cpu().sum()
     return correct.item() / float(target.size(0) * target.size(1))
@@ -62,6 +70,18 @@ def calculate_iou(pred, target, num_classes):
 
 
 def compute_confusion_matrix(batch_confusion_matrix, pred, labels, NUM_CLASSES):
+    """
+    Computes the confusion matrix for a batch of predictions.
+
+    Parameters:
+        batch_confusion_matrix (np.array): Accumulator for the confusion matrix of the current batch.
+        pred (torch.Tensor): Predicted labels for the batch.
+        labels (torch.Tensor): True labels for the batch.
+        NUM_CLASSES (int): Number of classes in the dataset.
+
+    Returns:
+        np.array: Updated confusion matrix after adding the current batch's results.
+    """
     _, predicted_classes = torch.max(
         pred, 1
     )  # Get the class with the highest probability for each point/pixel
@@ -78,9 +98,15 @@ def compute_confusion_matrix(batch_confusion_matrix, pred, labels, NUM_CLASSES):
 
 
 # --- PLOTS
-
-
 def plot_losses(train_loss, test_loss, save_to_file=None):
+    """
+    Plots the training and validation loss over epochs.
+
+    Parameters:
+        train_loss (list): List of training loss values per epoch.
+        test_loss (list): List of validation loss values per epoch.
+        save_to_file (str, optional): Path to save the plot image. If None, the plot is shown.
+    """
     fig = plt.figure()
     epochs = len(train_loss)
     plt.plot(range(epochs), train_loss, label="Training loss")
@@ -92,6 +118,14 @@ def plot_losses(train_loss, test_loss, save_to_file=None):
 
 
 def plot_accuracies(train_acc, test_acc, save_to_file=None):
+    """
+    Plots the training and validation accuracy over epochs.
+
+    Parameters:
+        train_acc (list): List of training accuracy values per epoch.
+        test_acc (list): List of validation accuracy values per epoch.
+        save_to_file (str, optional): Path to save the plot image. If None, the plot is shown.
+    """
     fig = plt.figure()
     epochs = len(train_acc)
     plt.plot(range(epochs), train_acc, label="Training accuracy")
@@ -103,6 +137,14 @@ def plot_accuracies(train_acc, test_acc, save_to_file=None):
 
 
 def plot_IoU(train_IoU, test_IoU, save_to_file=None):
+    """
+    Plots the training and validation IoU over epochs.
+
+    Parameters:
+        train_IoU (list): List of training IoU values per epoch.
+        test_IoU (list): List of validation IoU values per epoch.
+        save_to_file (str, optional): Path to save the plot image. If None, the plot is shown.
+    """
     fig = plt.figure()
     epochs = len(train_IoU)
     plt.plot(range(epochs), train_IoU, label="Training IoU")
@@ -114,7 +156,15 @@ def plot_IoU(train_IoU, test_IoU, save_to_file=None):
 
 
 def plot_iou_per_class(iou_per_class, class_names, phase="Testing", save_to_file=None):
-    """Plot IoU for each class across epochs/test."""
+    """
+    Plots the IoU for each class across epochs or tests.
+
+    Parameters:
+        iou_per_class (dict): Dictionary where keys are class indices and values are lists of IoU values.
+        class_names (list): List of class names corresponding to indices.
+        phase (str): Phase of the plot, "Testing" or another phase to adjust the title.
+        save_to_file (str, optional): Path to save the plot image. If None, the plot is shown.
+    """
     epochs = range(1, len(next(iter(iou_per_class.values()))) + 1)
     plt.figure(figsize=(10, 7))
     for cls, ious in iou_per_class.items():
@@ -139,6 +189,14 @@ def plot_iou_per_class(iou_per_class, class_names, phase="Testing", save_to_file
 
 
 def plot_confusion_matrix(total_confusion_matrix, class_names, save_to_file=None):
+    """
+    Plots a normalized confusion matrix.
+
+    Parameters:
+        total_confusion_matrix (np.array): Confusion matrix to be plotted.
+        class_names (list): Names corresponding to each class index.
+        save_to_file (str, optional): Path to save the plot image. If None, the plot is shown.
+    """
     fig = plt.figure(figsize=(10, 7))
     sns.heatmap(
         np.round(
@@ -160,10 +218,14 @@ def plot_confusion_matrix(total_confusion_matrix, class_names, save_to_file=None
     plt.close(fig)
 
 
-# --- FILE HANDLING
-
-
+# --- FILE HANDLIN
 def convert_las_to_csv(path):
+    """
+    Converts a LAS file to a CSV file with columns for X, Y, Z coordinates and classification.
+
+    Args:
+        path (str): The file path of the LAS file to convert.
+    """
     las = laspy.read(path)
     path = path[:-3] + "csv"
     with open(path, "w") as csv_file:
@@ -173,6 +235,13 @@ def convert_las_to_csv(path):
 
 
 def write_sample_to_csv(path, sample):
+    """
+    Writes a sample of point cloud data to a CSV file.
+
+    Args:
+        path (str): The file path of the CSV file to write.
+        sample (list of tuples): A list where each tuple represents a point (X, Y, Z) and its label.
+    """
     with open(path, "w") as csv_file:
         for item in sample:
             X, Y, Z, label = item
@@ -180,6 +249,15 @@ def write_sample_to_csv(path, sample):
 
 
 def read_sample_from_csv(path):
+    """
+    Reads point cloud data and labels from a CSV file.
+
+    Args:
+        path (str): The file path of the CSV file to read.
+
+    Returns:
+        tuple: A tuple containing two lists, one for the points and another for their labels.
+    """
     points = []
     labels = []
 
@@ -193,9 +271,16 @@ def read_sample_from_csv(path):
 
 
 # --- DATA PROCESSING
-
-
 def balance_classes(sample):
+    """
+    Balances classes in a dataset by under-sampling or over-sampling to the average class count.
+
+    Args:
+        sample (np.array): An array of shape (N, 4) where N is the number of points and each row is (X, Y, Z, label).
+
+    Returns:
+        np.array: A balanced array of shape (M, 4) where M <= N.
+    """
     labels = sample[:, -1]
     label_distribution = Counter(labels)
     average_num_points = int(np.mean(list(label_distribution.values())))
@@ -220,6 +305,16 @@ def balance_classes(sample):
 
 
 def sample_random_rotation_z_axis(points, theta=None):
+    """
+    Rotates a sample of points around the Z-axis by a random angle or a given angle.
+
+    Args:
+        points (np.array): An array of points of shape (N, 4), where N is the number of points.
+        theta (float, optional): The rotation angle in degrees. If None, a random angle is used.
+
+    Returns:
+        np.array: The rotated points of shape (N, 4).
+    """
     if theta is None:
         theta = np.random.uniform(0, 360)
 
@@ -237,9 +332,14 @@ def sample_random_rotation_z_axis(points, theta=None):
 
 def batch_random_rotation_z_axis(points):
     """
-    Rotate points around the z-axis by a given angle.
-    points: tensor of shape (batch_size, num_points, 3) representing XYZ coordinates.
-    angle_degrees: rotation angle in degrees.
+    Rotates a batch of points around the z-axis by a random angle.
+
+    Parameters:
+    - points (torch.Tensor): A tensor of shape (batch_size, num_points, 3) representing
+      XYZ coordinates of points for each instance in the batch.
+
+    Returns:
+    - torch.Tensor: The rotated points with the same shape as the input.
     """
     angle_degrees = np.random.uniform(0, 360)
     angle_radians = torch.deg2rad(torch.tensor(angle_degrees, device=points.device))
@@ -258,10 +358,19 @@ def batch_random_rotation_z_axis(points):
 
 
 # --- VISUALIZATION
-
-
 def prepare_3d_subplot(ax, points, labels, verbose=True):
+    """
+    Prepares a 3D subplot with labeled point cloud data.
 
+    Parameters:
+    - ax (matplotlib.axes.Axes): The axes object to plot on.
+    - points (list of lists): The point cloud data, where each point is represented as [x, y, z].
+    - labels (list): The labels for each point in the point cloud.
+    - verbose (bool, optional): If True, axis labels are set; otherwise, axis ticks are removed.
+
+    Returns:
+    - None
+    """
     X, Y, Z, L = [], [], [], []
     for point in points:
         X.append(point[0])
@@ -307,6 +416,18 @@ def prepare_3d_subplot(ax, points, labels, verbose=True):
 
 
 def visualize_sample(points, labels, save_to_file=None, phase="None"):
+    """
+    Visualizes a sample of point cloud data in 3D space.
+
+    Parameters:
+    - points (list of lists): The point cloud data, where each point is represented as [x, y, z].
+    - labels (list): The labels for each point in the point cloud.
+    - save_to_file (str, optional): Path to save the plot to a file. If None, the plot is shown instead.
+    - phase (str, optional): Describes the phase or context of the visualization (e.g., "Testing").
+
+    Returns:
+    - None
+    """
     fig = plt.figure(figsize=(15, 10))
     ax = fig.add_subplot(111, projection="3d")
     prepare_3d_subplot(ax, points, labels)
@@ -322,17 +443,45 @@ def visualize_sample(points, labels, save_to_file=None, phase="None"):
 
 
 def visualize_tile_by_path(path):
+    """
+    Converts a LAS file to CSV, then visualizes the point cloud data from the generated CSV file.
+
+    Parameters:
+    - path (str): Path to the LAS file to be visualized.
+
+    Returns:
+    - None
+    """
     convert_las_to_csv(path)
     points, labels = read_sample_from_csv(path[:-3] + "csv")
     visualize_sample(points, labels)
 
 
 def visualize_sample_by_path(path):
+    """
+    Visualizes the point cloud data from a given CSV file.
+
+    Parameters:
+    - path (str): Path to the CSV file containing point cloud data.
+
+    Returns:
+    - None
+    """
     points, labels = read_sample_from_csv(path)
     visualize_sample(points, labels)
 
 
 def visualize_100_samples(dirpath, start_idx):
+    """
+    Visualizes 100 point cloud samples from CSV files located in a directory, starting from a specified index.
+
+    Parameters:
+    - dirpath (str): Directory path containing the CSV files.
+    - start_idx (int): The starting index to begin visualization.
+
+    Returns:
+    - None
+    """
     samples = []
 
     fig, axes = plt.subplots(10, 10, figsize=(10, 10), subplot_kw={"projection": "3d"})
