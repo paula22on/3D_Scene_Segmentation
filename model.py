@@ -3,6 +3,7 @@ import torch.nn as nn
 import torch.nn.functional as F
 
 
+# PointNet architecture
 class TransformationNet(nn.Module):
     def __init__(self, input_dim, output_dim):
         super(TransformationNet, self).__init__()
@@ -161,12 +162,9 @@ class SegmentationPointNet(nn.Module):
         self.logsoftmax = nn.LogSoftmax(dim=1)
 
     def forward(self, x):
-        # Initial shape of x: torch.Size([32, 500, 3])
-
         x = x.transpose(
             2, 1
         )  # we transpose to [batch_size, num_features, num_points] to match BasePointNet
-        #  Shape of x after transpose: torch.Size([32, 3, 500])
 
         global_features, feature_transform, per_point_features, _ = self.base_pointnet(
             x
