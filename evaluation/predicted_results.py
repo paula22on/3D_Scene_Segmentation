@@ -9,6 +9,9 @@ import torch.optim as optim
 from torch.utils.data import DataLoader
 from tqdm import tqdm
 
+import sys
+sys.path.append(os.path.join(os.getcwd(),'../'))
+
 from dataset import MyDataset
 from model import ClassificationPointNet, SegmentationPointNet
 from utils import (
@@ -20,17 +23,20 @@ from utils import (
     plot_IoU,
     plot_iou_per_class,
     plot_losses,
-    visualize_sample
+    visualize_sample,
+    visualize_100_concatenated_samples,
+    write_sample_to_csv
 )
 
 SEGMENTATION = True
 WEIGHTED_LOSS = False
 NUM_POINTS = 4096
 NUM_CLASSES = 9
+NUM_TEST_TILES = 11
 
 def main(): 
     #train_dataset = MyDataset("data/train", NUM_POINTS, "train")
-    test_dataset = MyDataset("data/test", NUM_POINTS, "test", sample_method = "normal")
+    test_dataset = MyDataset("../data", NUM_POINTS, "test", sample_method = "normal")
 
         
     #total_length = len(train_dataset)
@@ -59,7 +65,7 @@ def main():
 
     optimizer = optim.Adam(model.parameters(), lr=0.001)
 
-    model_checkpoint = 'checkpoints/segmentation_checkpoint_augmentation.pth'
+    model_checkpoint = 'checkpoints-segmentation/segmentation_checkpoint_rotated.pth'
     if model_checkpoint:
         state = torch.load(model_checkpoint, map_location=torch.device(device))
         model.load_state_dict(state['model'])
@@ -75,14 +81,10 @@ def main():
         i: [] for i in range(NUM_CLASSES)
     }  # For storing validation/testing IoU per class
 
-    output_folder = "predicted"
-    input_folder = "original"
-
-    if not os.path.exists(output_folder):
-        os.makedirs(output_folder)
-
-    if not os.path.exists(input_folder):
-        os.makedirs(input_folder)
+    if not os.path.exists('figures/sample_images'):
+        os.makedirs('figures/sample_images')
+    if not os.path.exists('figures/sample_data'):
+        os.makedirs('figures/sample_data')
 
     with torch.no_grad():
         idx = 0
@@ -96,11 +98,52 @@ def main():
             for batch_idx in range(points.size(0)):
                 points_batch = points[batch_idx]
                 pred_batch = max_pred[batch_idx]
-                save_to_file = os.path.join(input_folder,f"input_batch{batch_idx}_idx{idx}_points{NUM_POINTS}.png")
+
+                # Visualize and save original sample
+
+                save_to_file = f'figures/sample_images/original_sample_{NUM_POINTS}points_{idx}.png'
                 visualize_sample(points_batch, labels[batch_idx], save_to_file, "Testing")
-                save_to_file = os.path.join(output_folder,f"predicted_output_batch{batch_idx}_idx{idx}_points{NUM_POINTS}.png")
+
+                save_to_file = f'figures/sample_data/original_sample_{NUM_POINTS}points_{idx}.csv'
+                labels_reshaped = labels[batch_idx].view(-1, 1)
+                orig_sample = torch.cat((points_batch, labels_reshaped), dim=1)
+                write_sample_to_csv(save_to_file, orig_sample)
+
+                # Visualize and save predicted sample
+
+                save_to_file = f'figures/sample_images/predicted_sample_{NUM_POINTS}points_{idx}.png'
                 visualize_sample(points_batch, pred_batch, save_to_file, "Testing")
+
+                save_to_file = f'figures/sample_data/predicted_sample_{NUM_POINTS}points_{idx}.csv'
+                pred_reshaped = pred_batch.view(-1, 1)
+                pred_sample = torch.cat((points_batch, pred_reshaped), dim=1)
+                write_sample_to_csv(save_to_file, pred_sample)
+
                 idx += 1
+
+
+    # Visualize and save concatenation of 100 samples to recreate original and predicted tile
+                
+    for idx in range(0, NUM_TEST_TILES*100, 100):
+
+        print(idx)
+
+        sample_data_path  = os.path.join(os.getcwd(), 'figures/sample_data')
+        sample_image_path = os.path.join(os.getcwd(), 'figures/sample_images')
+
+        visualize_100_concatenated_samples(
+            sample_data_path  = sample_data_path, 
+            sample_image_path = sample_image_path, 
+            filename_no_idx = f'original_sample_{NUM_POINTS}points',
+            start_idx = idx
+        )
+
+        visualize_100_concatenated_samples(
+            sample_data_path  = sample_data_path, 
+            sample_image_path = sample_image_path, 
+            filename_no_idx   = f'predicted_sample_{NUM_POINTS}points',
+            start_idx = idx
+        )
 
 if __name__ == "__main__":
     main()

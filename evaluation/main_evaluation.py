@@ -9,6 +9,9 @@ import torch.optim as optim
 from torch.utils.data import DataLoader
 from tqdm import tqdm
 
+import sys
+sys.path.append(os.path.join(os.getcwd(),'../'))
+
 from dataset import MyDataset
 from model import ClassificationPointNet, SegmentationPointNet
 from utils import (
@@ -28,8 +31,8 @@ NUM_POINTS = 2048
 NUM_CLASSES = 9
 
 def main(): 
-    train_dataset = MyDataset("data", NUM_POINTS, "train")
-    test_dataset = MyDataset("data", NUM_POINTS, "test")
+    train_dataset = MyDataset("../data", NUM_POINTS, "train")
+    test_dataset = MyDataset("../data", NUM_POINTS, "test")
 
         # Calculate weighted loss -- New code it may break here
     if WEIGHTED_LOSS:
@@ -63,7 +66,7 @@ def main():
 
     optimizer = optim.Adam(model.parameters(), lr=0.001)
 
-    model_checkpoint = 'checkpoints/segmentation_checkpoint_augmentation.pth'
+    model_checkpoint = 'checkpoints-segmentation/segmentation_checkpoint_augmentation.pth'
     if model_checkpoint:
         state = torch.load(model_checkpoint, map_location=torch.device(device))
         model.load_state_dict(state['model'])
