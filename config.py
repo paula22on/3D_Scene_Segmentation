@@ -4,5 +4,5 @@ NUM_POINTS = 2048
 NUM_CLASSES_SEGMENTATION = 9
 NUM_CLASSES_CLASSIFICATION = 16
 RANDOM_ROTATION_IN_BATCH = True
-CHECKPOINT_DIRECTORY = "checkpoints-segmentation"
-FIGURES_DIRECTORY = "figures"
+CHECKPOINT_DIRECTORY = "evaluation/checkpoints-segmentation"
+FIGURES_DIRECTORY = "evaluation/figures"

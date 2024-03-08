@@ -9,7 +9,7 @@ from tqdm import tqdm
 from config import (
     CHECKPOINT_DIRECTORY,
     FIGURES_DIRECTORY,
-    NUM_CLASSES,
+    NUM_CLASSES_SEGMENTATION,
     NUM_CLASSES_CLASSIFICATION,
     NUM_POINTS,
     RANDOM_ROTATION_IN_BATCH,
@@ -76,7 +76,7 @@ def main():
 
     # Initialize the model based on the task (segmentation or classification).
     if SEGMENTATION:
-        model = SegmentationPointNet(num_classes=NUM_CLASSES, point_dimension=3)
+        model = SegmentationPointNet(num_classes=NUM_CLASSES_SEGMENTATION, point_dimension=3)
     else:
         model = ClassificationPointNet(
             num_classes=NUM_CLASSES_CLASSIFICATION,
@@ -109,10 +109,10 @@ def main():
     test_iou = []
     best_loss = np.inf  # Track the best loss for model saving
     train_iou_per_class = {
-        i: [] for i in range(NUM_CLASSES)
+        i: [] for i in range(NUM_CLASSES_SEGMENTATION)
     }  # IoU per class for training
     test_iou_per_class = {
-        i: [] for i in range(NUM_CLASSES)
+        i: [] for i in range(NUM_CLASSES_SEGMENTATION)
     }  # IoU per class for testing/validation
     iou_log_file = open("iou_log.txt", "a")  # File to log IoU over epochs
 
@@ -122,7 +122,7 @@ def main():
         epoch_train_loss = []
         epoch_train_acc = []
         epoch_train_iou = []
-        epoch_train_iou_per_class = {i: [] for i in range(NUM_CLASSES)}
+        epoch_train_iou_per_class = {i: [] for i in range(NUM_CLASSES_SEGMENTATION)}
 
         # Training Loop
         for i, data in enumerate(train_dataloader):
@@ -145,9 +145,9 @@ def main():
             epoch_train_acc.append(acc)
 
             # IoU Calculation for Segmentation
-            ious, mean_iou = calculate_iou(pred, labels, NUM_CLASSES)
+            ious, mean_iou = calculate_iou(pred, labels, NUM_CLASSES_SEGMENTATION)
             epoch_train_iou.append(mean_iou)
-            for cls in range(NUM_CLASSES):
+            for cls in range(NUM_CLASSES_SEGMENTATION):
                 epoch_train_iou_per_class[cls].append(ious[cls])
 
             # Backward pass and optimize
@@ -161,7 +161,7 @@ def main():
         epoch_val_loss = []
         epoch_val_acc = []
         epoch_val_iou = []
-        epoch_val_iou_per_class = {i: [] for i in range(NUM_CLASSES)}
+        epoch_val_iou_per_class = {i: [] for i in range(NUM_CLASSES_SEGMENTATION)}
 
         # Validation Loop
         with torch.no_grad():
@@ -177,9 +177,9 @@ def main():
                 epoch_val_acc.append(acc)
 
                 # Caclulate IoU and append to epoch_val_iou
-                ious, mean_iou = calculate_iou(pred, labels, NUM_CLASSES)
+                ious, mean_iou = calculate_iou(pred, labels, NUM_CLASSES_SEGMENTATION)
                 epoch_val_iou.append(mean_iou)
-                for cls in range(NUM_CLASSES):
+                for cls in range(NUM_CLASSES_SEGMENTATION):
                     epoch_val_iou_per_class[cls].append(ious[cls])
 
             print(
@@ -219,7 +219,7 @@ def main():
         test_acc.append(np.mean(epoch_val_acc))
         train_iou.append(np.mean(epoch_train_iou))
         test_iou.append(np.mean(epoch_val_iou))
-        for cls in range(NUM_CLASSES):
+        for cls in range(NUM_CLASSES_SEGMENTATION):
             train_iou_per_class[cls].append(np.mean(epoch_train_iou_per_class[cls]))
             test_iou_per_class[cls].append(np.mean(epoch_val_iou_per_class[cls]))
 
@@ -241,10 +241,10 @@ def main():
     epoch_test_acc = []
     epoch_test_iou = []
     total_confusion_matrix = np.zeros(
-        (NUM_CLASSES, NUM_CLASSES)
+        (NUM_CLASSES_SEGMENTATION, NUM_CLASSES_SEGMENTATION)
     )  # Initialize confusion matrix
     epoch_test_iou_per_class = {
-        i: [] for i in range(NUM_CLASSES)
+        i: [] for i in range(NUM_CLASSES_SEGMENTATION)
     }  # Initialize IoU per class tracking
 
     with torch.no_grad():
@@ -259,14 +259,14 @@ def main():
             epoch_test_acc.append(acc)
 
             # Compute IoU
-            ious, mean_iou = calculate_iou(pred, labels, NUM_CLASSES)
+            ious, mean_iou = calculate_iou(pred, labels, NUM_CLASSES_SEGMENTATION)
             epoch_test_iou.append(mean_iou)
-            for cls in range(NUM_CLASSES):
+            for cls in range(NUM_CLASSES_SEGMENTATION):
                 epoch_test_iou_per_class[cls].append(ious[cls])
 
             # Confusion matrix
             batch_confusion_matrix = compute_confusion_matrix(
-                total_confusion_matrix, pred, labels, NUM_CLASSES
+                total_confusion_matrix, pred, labels, NUM_CLASSES_SEGMENTATION
             )
             total_confusion_matrix += batch_confusion_matrix
 
@@ -274,8 +274,8 @@ def main():
     average_test_loss = sum(epoch_test_loss) / len(epoch_test_loss)
     average_test_accuracy = sum(epoch_test_acc) / len(epoch_test_acc)
     average_test_iou = sum(epoch_test_iou) / len(epoch_test_iou)
-    avg_test_iou_per_class = {i: [] for i in range(NUM_CLASSES)}
-    for cls in range(NUM_CLASSES):
+    avg_test_iou_per_class = {i: [] for i in range(NUM_CLASSES_SEGMENTATION)}
+    for cls in range(NUM_CLASSES_SEGMENTATION):
         avg_test_iou_per_class[cls].append(np.mean(epoch_test_iou_per_class[cls]))
 
     # Print the results
@@ -347,14 +347,14 @@ def main():
     )
 
     # Save ious per class in train
-    iou_class_file = open("train_iou_class.txt", "a")
+    iou_class_file = open("evaluation/train_iou_class.txt", "a")
     for cls, iou in train_iou_per_class.items():
         iou_class_file.write(f"{class_names[cls]}: iou = {iou[-1]:.4f}\n")
         iou_class_file.flush()
     iou_class_file.close()
 
     # Save ious per classin test
-    iou_class_file = open("test_iou_class.txt", "a")
+    iou_class_file = open("evaluation/test_iou_class.txt", "a")
     for cls, iou in test_iou_per_class.items():
         iou_class_file.write(f"{class_names[cls]}: iou = {iou[-1]:.4f}\n")
         iou_class_file.flush()
