@@ -47,9 +47,9 @@ Advised by Mariona Carós.
 
 ## Overview
 
-This project implements a deep neural network model using the PointNet architecture for classification and segmentation tasks on 3D point cloud data. The implementation supports both tasks with adjustable parameters for the number of points in the cloud, the number of classes, and the choice between using a weighted loss function or not.
+Within the field of computer vision, the ability to accurately analyze 3 dimensional data stands as a cornerstone for nummerous applications, such as autonomous driving, VR or urban planning. In order to satisfy these, appears the need of efficient methods to classify and segment this data, enabling machines to understand and interact with complex 3D environments in a meaningful way.
 
-- [ ] **TODO:** Ampliar això com a introducció/motivació del projecte
+This project makes use of the PointNet architecture, a deep neural network designed to tackle these challenges providing a direct analysis of 3D point clouds. Our implementation leverages the segmentation task of this framework and enriches it by enabling customizable parameters that will adjust the architecture to the demands of the dataset.
 
 ### Project features
 
@@ -67,7 +67,33 @@ PointNet is a pioneering deep learning architecture for processing unstructured 
 ## DALES dataset
 
 - [ ] **TODO:** Explicar DALES i tot el preprocessing i posar visualitzacions
-- [ ] **TODO:** Add whole DALES dataset image
+
+The DALES dataset is an aerial LiDAR collection featuring over half a billion hand-labeled points across 10 km2 and eight distinct object categories. Unlike other datasets, DALES focuses on aerially collected data, introducing unique challenges and opportunities for 3D urban modeling and large-scale surveillance applications. With its vast scale and high resolution, DALES provides an extensive base for evaluating and developing 3D deep learning algorithms.
+
+![image](https://github.com/paula22on/3D_Scene_Segmentation/assets/135391540/db7a0824-a3d4-4459-bc0f-6f4104e9605c)
+
+Each point in this dataset has been hand-labeled under 9 different categories:
+
+| Category | Color |
+| -------- | ----- |
+| Ground | 'blue' |
+| Vegetation | 'dark green' |
+| Power Lines | 'light green' |
+| Poles | 'orange' |
+| Buildings | 'red' |
+| Fences | 'light blue' |
+| Trucks | 'yellow' |
+| Cars | 'pink' |
+| Unknown | 'dark blue' |
+
+In order to prepare the dataset for use with the PointNet architecture, we tailored a preprocessing pipeline for the DALES dataset, designed to enhance the quality and usability of the dataset, optimizing it for effective training and evaluation of our model. The key steps in this process are the following:
+
+1. **Simplification.** We begin by simplifying the raw LAS (LiDAR Aerial Survey) files, extracting essential data such as X, Y, Z coordinates, and classification labels. This step distills the dataset down to its most important features for efficient processing.
+2. **Normalization.** To ensure uniformity across the dataset, we normalize the X and Y coordinates. This involves adjusting these coordinates to a common scale by subtracting the minimum value found in the dataset, ensuring that our model trains on consistently scaled data.
+3. **Subsampling.** Given the extensive size of the DALES dataset, direct processing is computationally challenging. To address this, we implement a subsampling strategy, dividing the point cloud into smaller, more manageable regions. This step allows us to maintain a high level of detail while reducing the computational load. The divider parameter controls the granularity of this subdivision, enabling flexibility in the balance between detail and performance.
+4. **Balancing Classes.** Imbalances in the distribution of classes within the dataset can bias the model's training process. To mitigate this, we optionally apply a class balancing step to ensure that each class is equally represented, enhancing the model's ability to generalize across different categories.
+5. **Data Augmentation - Rotation.** To improve the robustness of our model, we introduce variability into the training data through random rotations about the Z-axis. This form of data augmentation simulates a wider variety of scenarios, helping the model learn to recognize structures from different orientations.
+6. **Exporting Processed Data** After preprocessing, the data is exported into CSV files, organized by sample type (train or test) and further divided based on the subsampling strategy. This structured format makes it easy to manage and access the data during training and evaluation phases.
 
 ### Downsampling
 - [ ] **TODO:** Add image of divided tiles
