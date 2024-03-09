@@ -164,6 +164,7 @@ def main():
         epoch_val_iou_per_class = {i: [] for i in range(NUM_CLASSES_SEGMENTATION)}
 
         # Validation Loop
+        model.eval()
         with torch.no_grad():
             for data in val_dataloader:
                 points, labels = data
