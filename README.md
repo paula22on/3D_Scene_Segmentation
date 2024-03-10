@@ -71,7 +71,8 @@ The dataset used for this project is DALES, or Dayton Annotated Laser Earth Scan
 
 DALES contains forty scenes of dense, labeled aerial data spanning multiple scene types, including urban, suburban, rural, and commercial. The data was hand-labeled by a team of expert LiDAR technicians into eight categories: ground, vegetation, cars, trucks, poles, power lines, fences, and buildings. The entired dataset is split into testing and training, and provided in 3 different data formats. The data format used in this project is LAS (LiDAR Aerial Survey).
 
-![image](https://github.com/paula22on/3D_Scene_Segmentation/assets/135391540/db7a0824-a3d4-4459-bc0f-6f4104e9605c)
+![image]((https://github.com/paula22on/3D_Scene_Segmentation/assets/55758205/48eb648b-b0d8-4e94-8dd1-17492ecb6237))
+
 
 Each point in this dataset has been hand-labeled under 9 different categories:
 
