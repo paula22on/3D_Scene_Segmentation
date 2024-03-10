@@ -184,6 +184,7 @@ Test Results - Loss: 1.2387, Accuracy: 0.63, IoU: 0.17%. In this case we are ind
 
 <img src="https://github.com/paula22on/3D_Scene_Segmentation/assets/55758205/d6b84bc9-b06b-47ea-b4ff-8532e106a41f" width="500" alt="cm">
 <img src="https://github.com/paula22on/3D_Scene_Segmentation/assets/55758205/f77abd50-ab05-4502-879f-8513ec5c29b0" width="500" alt="cm">
+<img src="https://github.com/paula22on/3D_Scene_Segmentation/assets/55758205/08f0d646-efe0-45dd-8cc3-ae43b78a5a21" width="500" alt="cm">
 
 ### Inverse Weighted Loss
 For the sake of investigation, we also tried to train our model using the inverse weighted loss on the original data, (without any balancing nor augmentation). It performs positively for non majority distributed classes, but it lacks coherence in terms of prediction. At this point our model doesn't predict neither vegetation or ground correctly, which obviously discards the model. 
