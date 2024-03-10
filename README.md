@@ -96,7 +96,7 @@ In order to prepare the dataset for use with the PointNet architecture, we tailo
 6. **Exporting Processed Data.** After preprocessing, the data is exported into CSV files, organized by sample type (train or test) and further divided based on the subsampling strategy. This structured format makes it easy to manage and access the data during training and evaluation phases.
 
 ### Subsampling
-- [ ] **TODO:** Add image of divided tiles
+- [ ] **TODO:** Explain
 
 ![Original tile image](assets/original_tile_top_left_corner.png)
 
@@ -104,15 +104,15 @@ In order to prepare the dataset for use with the PointNet architecture, we tailo
 
 
 #### Random sampling
-- [ ] **TODO:** Add image of original subsample VS random sample
+- [ ] **TODO:** Explain
 
 ![Original VS random subsample image](assets/original_vs_random_subsample_0.png)
 
 
 ### Data balancing
-- [ ] **TODO:** Add image of original subsample VS random sample VS balanced sample
+- [ ] **TODO:** Explain
 
-![Original VS random VS balanced subsample image](assets/original_vs_random_vs_balanced_subsample_0.png)
+![Original VS balanced subsample image](assets/original_vs_balanced_subsample_0.png)
 
 ### Data rotation
 - [ ] **TODO:** Add image of balanced sample VS rotated 45 degrees VS rotated 90 degrees
