@@ -30,7 +30,7 @@ def exportSubsamples(idx, sample_type, divider, subsamples, balance, rotate):
 
     # Calculate the starting index for subsamples, adjusted for training data.
     nsub = idx * divider**2
-    if sample_type == "train":
+    if sample_type == "train" and balance and rotate:
         nsub = nsub * 2
 
     # Iterate over the subsamples grid to process and save each subsample.
@@ -54,10 +54,10 @@ def exportSubsamples(idx, sample_type, divider, subsamples, balance, rotate):
                         rotated_sample = sample_random_rotation_z_axis(
                             sample
                         )  # Apply a random rotation for data augmentation and save the rotated sample.
-                        nsub += 1
                         write_sample_to_csv(
                             f"{outdir}/{divider}_divisions_{nsub}.csv", rotated_sample
                         )
+                        nsub += 1
                     # If the sample was not balanced and not rotated, just save the original sample.
                     if not original_sample_saved and not rotate:
                         write_sample_to_csv(
@@ -69,8 +69,9 @@ def exportSubsamples(idx, sample_type, divider, subsamples, balance, rotate):
                     write_sample_to_csv(
                         f"{outdir}/{divider}_divisions_{nsub}.csv", sample
                     )
+                    nsub += 1
 
-            nsub += 1
+            
 
 
 def subsample(divider, X, Y, Z, labels):
