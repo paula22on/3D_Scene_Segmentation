@@ -152,7 +152,7 @@ In addition to evaluating the PointNet architecture's classification capabilitie
 
 For simpler tasks, such as the classification challenge we undertook with the ShapeNetCore dataset, the PointNet architecture can be effectively streamlined by reducing the number of layers. This modification maintains high accuracy while optimizing computational efficiency. Conversely, for more complex applications, such as segmentation tasks that demand a finer understanding of point cloud data, the architecture can be scaled up by increasing the number of layers. This flexibility allows PointNet to be tailored to a wide range of demands, balancing performance and computational resources according to the specific requirements of the task at hand.
 
-## Results - ALBERT
+## Results
 
 We are training the dataset with a PointNet model using an NLLLoss or the Inverse Weighted Cross Entropy Loss. For the batch size, using 32 as batch size is expected for this kind of problem where literature expects not a great number of batch sizes for preventing overfitting. 
 
@@ -174,7 +174,7 @@ Test Results - Loss: 0.6857, Accuracy: 0.75, IoU: 0.19%. We may consider them fa
 <img src="https://github.com/paula22on/3D_Scene_Segmentation/assets/55758205/207c6b11-f766-43fc-836e-7399f3db2718" width="500" alt="cm">
 <img src="https://github.com/paula22on/3D_Scene_Segmentation/assets/55758205/40960eef-aabb-4383-809a-132321368201" width="500" alt="cm">
 
-### Data balancing + augmentation 
+### Data balancing + Augmentation 
 For the next phase, we are using balancing on the original dataset during preprocessing on training data. Also we are augmenting our training data by performing random rotation on the pre-processing module, as it would give us an advantage over more training data.
 We also made re-ajustment on the model architecture, in terms of upsizing the layers of the architecture, in order to be more suitable for our task, as exlained above. Upsizing occurs mostly inside the T-Net layers.
 
