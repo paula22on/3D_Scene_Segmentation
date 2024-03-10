@@ -453,7 +453,7 @@ By applying PointNet++ onto DALES, a hierarchical neural network that applies Po
 
 We also wondered about which balancing/augmenting methods to use, and we are aware that there is another subsampling method, called voxel subsampling, which performes a uniform subsampling only collecting the average of points for every quadrant of the grid. it could be made using open3d library onto the pointcloud DALES dataset, but for a time perspective we didn't implement this solution, as well as the computational resources that it would recquire, specialy on this concrete dataset. [Open3D library](https://www.open3d.org/docs/release/tutorial/geometry/pointcloud.html)
 
-We are also aware of new State of the Art architectures that could strongly perfom onto the DALES dataset, also in terms of efficiency and number of parameters. That is the Point-Voxel CNN which is considered an architecture for Efficient 3D Deep Learning, that speedsup and performs beter than lots of models compared to, published mostly by MIT researchers. [Point-Voxel CNN](https://arxiv.org/pdf/1907.03739.pdf)  
+We are also aware of new State of the Art architectures that could strongly perfom onto the DALES dataset; also in terms of efficiency and number of parameters. One of them is the Point-Voxel CNN which is considered an architecture for Efficient 3D Deep Learning, that speedsup and performs better than lots of previously released models, published mostly by MIT researchers. [Point-Voxel CNN](https://arxiv.org/pdf/1907.03739.pdf)  
 
 
 
