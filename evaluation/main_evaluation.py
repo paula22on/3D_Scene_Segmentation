@@ -24,17 +24,26 @@ from utils import (
 )
 
 SEGMENTATION = True
-WEIGHTED_LOSS = False
+WEIGHTED_LOSS = True
 NUM_POINTS = 2048
 NUM_CLASSES = 9
 
 def main(): 
-
+    train_dataset = MyDataset("data", NUM_POINTS, "train")
     test_dataset = MyDataset("data", NUM_POINTS, "test")
 
-        # Calculate weighted loss -- New code it may break here
+      # Calculate weighted loss
     if WEIGHTED_LOSS:
-        pass
+        class_weights = (
+            train_dataset.calculate_class_weights()
+        )  # get weight from MyDataset function
+        class_weights_tensor = torch.tensor(
+            class_weights, dtype=torch.float
+        )  # convert numpy to tensor
+        if torch.cuda.is_available():
+            class_weights_tensor = class_weights_tensor.cuda()
+
+        criterion = torch.nn.CrossEntropyLoss(weight=class_weights_tensor)
     else:
         criterion = torch.nn.NLLLoss()
 
@@ -57,7 +66,7 @@ def main():
 
     optimizer = optim.Adam(model.parameters(), lr=0.001)
 
-    model_checkpoint = 'checkpoints/segmentation_checkpoint_augmentation.pth'
+    model_checkpoint = 'checkpoints/segmentation_checkpoint_weighted.pth'
     if model_checkpoint:
         state = torch.load(model_checkpoint, map_location=torch.device(device))
         model.load_state_dict(state['model'])
