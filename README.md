@@ -264,6 +264,8 @@ We are selecting this model as our best performance model, as it incroporates th
 
 Our test results are the following:
 
+Test Results - Loss: 1.2624, Accuracy: 0.60, IoU: 0.18%
+
 
 <img src="https://github.com/paula22on/3D_Scene_Segmentation/assets/55758205/a061828d-6cef-4477-885c-83debbc4586a" width="500" alt="cm">
 <img src="https://github.com/paula22on/3D_Scene_Segmentation/assets/55758205/e3b88b5b-7275-44f5-88ce-71817c76867a" width="500" alt="cm">
