@@ -160,8 +160,11 @@ For simpler tasks, such as the classification challenge we undertook with the Sh
 
 - [ ] **TODO:** Describe how to evaluate the model's performance on a validation or test dataset. Include metrics used for evaluation and how to interpret the results.
 
-### First approach (case study 1)
-- [ ] **TODO:** Add plots and images of first results (the one that only predicted majority classes)
+### Naive approach 
+Training on the original dataset without any changes. The model only predicts 3 classes out of 9. No augmentation or loss method is performed so the majority classes in terms of distribution have all the impact for the model. 
+
+<img src="https://github.com/paula22on/3D_Scene_Segmentation/assets/117265561/4a39e610-2d8a-4ad1-a80f-7def538fa4c6" width="500" alt="cm">
+
 
 ### Model improvements
 #### Weighted loss
