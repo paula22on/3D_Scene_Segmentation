@@ -323,7 +323,6 @@ Run the main script to start training or evaluation:
 ```
 python main.py
 ```
-- [ ] **TODO:** Add explanation of config file - PAULA
 
 #### Customization options
 
@@ -332,7 +331,25 @@ You can customize the training process by modifying the following flags in main.
 - SEGMENTATION: Set to True for segmentation tasks, or False for classification.
 - WEIGHTED_LOSS: Enable or disable weighted loss calculation.
 - NUM_POINTS: The number of points in each point cloud.
-- NUM_CLASSES: The number of classes for classification/segmentation.
+- NUM_CLASSES_SEGMENTATION: The number of classes for segmentation.
+- NUM_CLASSES_CLASSIFICATION: The number of classes for classification.
+- RANDOM_ROTATION_IN_BATCH: Set to True if you want to doa random rotation in each batch, otherwise, False.
+- CHECKPOINT_DIRECTORY: The directory to save the checkpoint.
+- FIGURES_DIRECTORY: The directory to save the resulting figures.
+
+You can modify the different parameters in the config.py file:
+
+```
+SEGMENTATION = True
+WEIGHTED_LOSS = False
+NUM_POINTS = 2048
+NUM_CLASSES_SEGMENTATION = 9
+NUM_CLASSES_CLASSIFICATION = 16
+RANDOM_ROTATION_IN_BATCH = True
+CHECKPOINT_DIRECTORY = "evaluation/checkpoints-segmentation"
+FIGURES_DIRECTORY = "evaluation/figures"
+```
+Once the file is saved with you desired parameters you can run the main script using the command above.
 
 #### Visualization
 
