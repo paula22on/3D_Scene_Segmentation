@@ -106,9 +106,9 @@ The image below depicts the top view of one of the forty scenes provided by DALE
 
 <img src="https://github.com/paula22on/3D_Scene_Segmentation/assets/55758205/7f791a73-7785-4d94-8953-0f9f3b45c41f" width="800" alt="cm">
 
-
 We computed the ditribution of points across the complete dataset, for each category, diven the train/tast partition that was present on the original data. 
-![output](https://github.com/paula22on/3D_Scene_Segmentation/assets/55758205/981c1c15-2723-44de-8cbd-69052bf0a29f)
+
+<img src="https://github.com/paula22on/3D_Scene_Segmentation/assets/55758205/981c1c15-2723-44de-8cbd-69052bf0a29f" width="800" alt="cm">
 
 All the following methods and results, have the awareness that there are 3 majority classes (ground, vegetation, buidlings) and other minority classes that may be more difficult to learn and predict correctly.
 
@@ -390,18 +390,7 @@ These steps will preprocess the dataset, making it suitable for further analysis
 
 ### How to train the model
 
-#### Setting the environment in Google Cloud?
-
-- [ ] **TODO:** Is this needed? - DANIEL 
-
-
-#### Running training scripts
-
-To use this project for training or evaluating a PointNet model on your dataset, follow these steps:
-
-Prepare your dataset in the required format and place it in the data directory.
-
-Run the main script to start training or evaluation:
+To use this project for training the PointNet model on your dataset, prepare your dataset in the required format and place it in the data directory. Then run the main script to start training:
 
 ```
 python main.py
@@ -481,9 +470,56 @@ plot_losses(
 ### How to evaluate the model
 
 #### Running the evaluation scripts
-- [ ] **TODO:** Add trained model in drive and add in GitHub explanation in how to use it - LAURA
+
+Once the model was trained, we stored the model checkpoints for future evaluation and uploaded it into a downloadable site. 
+
+The evaluation scripts are placed within the `evaluation/` directory. To evaluate the model and the different approaches we took for training, follow these steps:
+
+1. Download the checkpoints from [this link](https://drive.google.com/file/d/1fsB9gWDaHmKFjCH1FpFEHbD1RPLz-kSr/view?usp=drive_link)
+2. Unzip the `segmentation-checkpoints.zip` file
+3. Place the checkpoints inside the `evaluation/` directory. It is impotant to keep the folders and naming consistent with this directory structure:
+
+  ```
+  evaluation/
+    checkpoints-segmentation/
+      segmentation_checkpoint_augmentation.pth
+      segmentation_checkpoint_rotated.pth
+      segmentation_checkpoint_weighted.pth
+  ```
+
+4. Each of the four approaches presented corresponds to a checkpoint. We use arguments to evaluate each of the checkpoints, as follows:
+
+  - `--naive`: Path to the directory containing the DALES dataset in .las format.
+  - `--augmentation`: Number used for subsampling the dataset.
+  - `--rotated` (optional): Flag to balance the classes in the dataset.
+  - `--weighted` (optional): Flag to apply random rotation around the Z-axis for the training data.
+
+5. Navigate to the `evaluation` directory and run the evaluation script with one of these arguments to evaluate the corresponding training scenario.
+
+Example command:
+
+```
+cd evaluation/
+python3 evaluation.py --rotated
+
+```
 
 #### Interpreting the results
+
+After execution, various plots and 3D point cloud figures get stored within the `figures` directory.
+
+- `confmatrix_plot2048_rotated.png`: Plot of the confusion matrix resulting from trianing with the specified configuration.
+
+- `iou_per_test_class_plot2048_rotated.png`: Plot of the confusion matrix resulting from trianing with the specified configuration.
+
+- `sample_data/`: This directory contains a list of original and predicted samples in CSV format. Both the original and predicted samples are presented in two forms:
+  - `original_sample_2048points_0.csv`: This is the normal CSV format of a sample, where each point of the sample is lsited with x, y, z, and label values.
+  - `original_sample_2048points_0_to_99.csv`: This is a CSV containing the point values for 100 concurrent samples. All points are also listed as x, y, z, and label values.
+
+- `sample_images/`: This directory contains images of original and predicted samples in PNG format. Both the original and predicted samples are presented in two forms:
+  - `original_sample_2048points_0.png`: This file contains a normal 3D plot of a sample point cloud.
+  - `original_sample_2048points_0_to_99.png`: This file displays a top-view plot, excluding the Z-axis, depicting 100 consecutive samples concatenated across the X-Y area.
+
 
 ## Conclusions
 
