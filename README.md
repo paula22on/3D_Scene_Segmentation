@@ -485,6 +485,7 @@ The evaluation scripts are placed within the `evaluation/` directory. To evaluat
   evaluation/
     checkpoints-segmentation/
       segmentation_checkpoint_augmentation.pth
+      segmentation_checkpoint_naive.pth
       segmentation_checkpoint_rotated.pth
       segmentation_checkpoint_weighted.pth
   ```
