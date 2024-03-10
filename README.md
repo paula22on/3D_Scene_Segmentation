@@ -192,7 +192,11 @@ For the sake of investigation, we also tried to train our model using the invers
 We also performed random rotation for every epoch, as means of generalizing best our data. It did improve our training process, but it wasn't enough for our model to get good results for both minority and majority classes. 
 
 ### Final results (best case)
-- [ ] **TODO:** Add plots and images of the results
+
+<img src="https://github.com/paula22on/3D_Scene_Segmentation/assets/55758205/a061828d-6cef-4477-885c-83debbc4586a" width="500" alt="cm">
+<img src="https://github.com/paula22on/3D_Scene_Segmentation/assets/55758205/e3b88b5b-7275-44f5-88ce-71817c76867a" width="500" alt="cm">
+
+
 
 
 ## How to
