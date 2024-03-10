@@ -489,7 +489,7 @@ plot_losses(
 
 ## Conclusions
 
-During this project, we explored the PointNet architecture with the classificaction and the semantic segmentation task. A big challenge was accomplished, that is training a pointcloud model using a large dataset model, specially on the semantic segmentation task. Other challenges and milestone were achieves, as we extracted and learned different resources and limitations that the PointNet architecutre is offering us. 
+During this project, we explored the PointNet architecture with the classificaction and the semantic segmentation task. A big challenge was accomplished, that is training a pointcloud model using a large dataset model, specially on the semantic segmentation task. Other challenges and milestone were achieved, as we extracted and learned different resources and limitations that the PointNet architecutre offers and lacks. 
 
 We achieved a high level experimenting with 3d data, as all predicted results and different stages were acquired visually in terms of understanding our model and its performance better. 
 
