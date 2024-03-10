@@ -447,7 +447,11 @@ We also successfully deplopyed on GoogleCloud the pre-processing and training pr
 
 ## Future work
 
-- [ ] **TODO:** Complete this section - TOTS
+Further work is directly pointed into implementing PointNet++ with this dataset (with/without augmentation methods) and check where the cieling lies. We are pretty sure that our model performs good for global characteristics, as we get a pretty good glance of the city structure, building, vegetation, poles... But it is perfoming poorly on local structures such as correct size and position of cars, trucks, and some structures are not meant to be in terms of labeling but indeed in location and form. 
+
+By applying PointNet++ onto DALES, a hierarchical neural network that applies PointNet recursively on a nested partitioning, we could achieve greater results onto local structures of the semantic segmentation task. 
+
+We also wondered about which balancing/augmenting methods to use, and we are aware that there is another subsampling method, called voxel subsampling, which performe a uniform susampling only collecting the average of points for every quadrant of the grid. it could be made using open3d library onto the pointcloud DALES dataset, but for a time perspective we didn't implement this solution, as well as the computational resources that it would recquire, specialy on this concrete dataset. [open3d](https://www.open3d.org/docs/release/tutorial/geometry/pointcloud.html)
 
 
 
