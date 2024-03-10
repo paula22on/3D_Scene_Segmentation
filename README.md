@@ -105,7 +105,6 @@ The image below depicts the top view of one of the forty scenes provided by DALE
 
 ![Original tile image](assets/original_tile.png)
 
-- [ ] **TODO:** add original tile image
 
 ### Subsampling
 
