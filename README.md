@@ -105,11 +105,6 @@ The image below depicts the top view of one of the forty scenes provided by DALE
 
 ![Original tile image](assets/original_tile.png)
 
-We computed the point distribution of the dataset across each category, given orginal train and test presented by the original data. A big difference between classes is risen, given three majority classes (ground, vegetation and buidlings) and some minorty ones that have very little points compared to the others. 
-
-<img src="(https://github.com/paula22on/3D_Scene_Segmentation/assets/55758205/fb2d43f3-518f-43bf-8e82-bb45d055fac2)" width="500" alt="cm">
-
-All following methods and results are made given this awarness, that data is not equally distributed across all categories.
 
 ### Subsampling
 
