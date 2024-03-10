@@ -68,7 +68,10 @@ PointNet is a pioneering deep learning architecture for processing unstructured 
 
 - [ ] **TODO:** Explicar DALES i tot el preprocessing i posar visualitzacions - LAURA
 
-The DALES dataset is an aerial LiDAR collection featuring over half a billion hand-labeled points across 10 km2 and eight distinct object categories. Unlike other datasets, DALES focuses on aerially collected data, introducing unique challenges and opportunities for 3D urban modeling and large-scale surveillance applications. With its vast scale and high resolution, DALES provides an extensive base for evaluating and developing 3D deep learning algorithms.
+The dataset used for this project is DALES, or Dayton Annotated Laser Earth Scan dataset. It is a new large-scale aerial LiDAR data set with nearly a half-billion points spanning 10 square kilometers of area. Unlike other datasets, DALES focuses on aerially collected data, introducing unique challenges and opportunities for 3D urban modeling and large-scale surveillance applications. With its vast scale and high resolution, DALES provides an extensive base for evaluating and developing 3D deep learning algorithms.
+
+
+DALES contains forty scenes of dense, labeled aerial data spanning multiple scene types, including urban, suburban, rural, and commercial. The data was hand-labeled by a team of expert LiDAR technicians into eight categories: ground, vegetation, cars, trucks, poles, power lines, fences, and buildings. The entired dataset is split into testing and training, and provided in 3 different data formats. The data format used in this project is LAS (LiDAR Aerial Survey).
 
 ![image](https://github.com/paula22on/3D_Scene_Segmentation/assets/135391540/db7a0824-a3d4-4459-bc0f-6f4104e9605c)
 
@@ -77,14 +80,14 @@ Each point in this dataset has been hand-labeled under 9 different categories:
 | Category | Color |
 | -------- | ----- |
 | Ground | 'blue' |
-| Vegetation | 'dark green' |
-| Power Lines | 'light green' |
-| Poles | 'orange' |
+| Vegetation | 'green' |
+| Power Lines | 'yellow' |
+| Poles | 'pink' |
 | Buildings | 'red' |
-| Fences | 'light blue' |
-| Trucks | 'yellow' |
-| Cars | 'pink' |
-| Unknown | 'dark blue' |
+| Fences | 'gray' |
+| Trucks | 'orange' |
+| Cars | 'purple' |
+| Unknown | 'black' |
 
 In order to prepare the dataset for use with the PointNet architecture, we tailored a preprocessing pipeline for the DALES dataset, designed to enhance the quality and usability of the dataset, optimizing it for effective training and evaluation of our model. The key steps in this process are the following:
 
@@ -95,27 +98,67 @@ In order to prepare the dataset for use with the PointNet architecture, we tailo
 5. **Data Augmentation - Rotation.** To improve the robustness of our model, we introduce variability into the training data through random rotations about the Z-axis. This form of data augmentation simulates a wider variety of scenarios, helping the model learn to recognize structures from different orientations.
 6. **Exporting Processed Data.** After preprocessing, the data is exported into CSV files, organized by sample type (train or test) and further divided based on the subsampling strategy. This structured format makes it easy to manage and access the data during training and evaluation phases.
 
-### Subsampling
-- [ ] **TODO:** Explain
+The image below depicts the top view of one of the forty scenes provided by DALES, covering an area of 250 square meters. Each point in the point cloud is colored according to its assigned color as described in the presented table.
 
-![Original tile image](assets/original_tile_top_left_corner.png)
+![Original tile image](assets/original_tile.png)
+
+- [ ] **TODO:** add original tile image
+
+### Subsampling
+
+Given the computational challenges inherent in processing an entire scene of the dataset, and considering that the model operates on a limited number of points, we cannot effectively capture all the relationships and dependencies among every point in the point cloud. Thus, there is a necessity to partition the scenes into subsamples. Through experimentation, we have determined that dividing each scene into 100 pieces strikes a balance between reducing the number of points while preserving the essential relationships among them.
+
+This division process considers only the X and Y dimensions, leaving the Z dimension untouched. The Z dimension represents the vertical axis of a scene, and dividing it would result in the loss of semantic information. The X and Y axes are each divided by a factor of 10. Consequently, an entire tile of the DALES dataset is partitioned into 100 pieces.
+
+The image below illustrates the top left corner of the first scene in DALES.
+
+![Original tile left corner image](assets/original_tile_top_left_corner.png)
+
+This area is processed and subdivided into 5 distinct samples, as depicted below.
 
 ![Subsampling image](assets/original_subsamples_0_to_4.png)
 
 
 #### Random sampling
-- [ ] **TODO:** Explain
+
+As part of the subsampling process, each sample is further reduced through random subsampling of points. This random sampling technique is crucial for reducing the computational burden on the model, as it processes only a subset of points from the point cloud. By selecting randomly N amount of points for each sample, where N is typically configured to 2048 points per sample in this project, we ensure efficient resource utilization while retaining crucial spatial information vital for accurate segmentation.
+
+Below, we present a comparison between an original subsample (a single division of the original tile) containing a large number of points and a subsample where 2048 points have been randomly selected.
 
 ![Original VS random subsample image](assets/original_vs_random_subsample_0.png)
 
 
 ### Data balancing
-- [ ] **TODO:** Explain
+
+Class imbalance in point clouds poses a challenge as it can lead to biased model predictions and reduced performance on minority classes. In our dataset samples, we observe significant class imbalance, with an abundance of points for majority classes like ground, vegetation, and buildings, compared to minority classes such as poles, power lines, and fences. 
+
+![Class imbalance in subsample image](assets/class_imbalance_subsample_0.png)
+
+To mitigate this issue, we address class imbalance by modifying training samples. For each class, we compute the average number of points. Subsequently, if the number of points for a class is below the average, we replicate a random point of that class to augment the sample. Otherwise, if the number of points exceeds the average, we randomly select N points, where N is the average.
+
+The combination of the random sampling method described earlier with this balance, results in the representation we showcase below. The figure illustrates the original subsample on the left and the balanced subsample after the selection of 2048 points on the right.
 
 ![Original VS balanced subsample image](assets/original_vs_balanced_subsample_0.png)
 
 ### Data rotation
-- [ ] **TODO:** Add image of balanced sample VS rotated 45 degrees VS rotated 90 degrees
+
+In a model that deals with point clouds, data augmentation is crucial for several reasons. Firstly, it helps in enhancing the model's generalization ability by exposing it to a wider variety of input variations. Secondly, it aids in addressing the problem of limited data, which is often encountered in real-world scenarios. Additionally, data augmentation assists in mitigating overfitting by introducing variability into the training data.
+
+PointNet is a model invariant to permutations of 3D point cloud figures, which is why data augmentation becomes especially pertinent. Since the model remains unaffected by the order of points, we opt for augmentation techniques like rotation to enrich the dataset. Rotation allows the model to learn from various viewpoints of the same object, thereby improving its robustness and accuracy.
+
+The rotation of points occurs around the Z-axis by either a random angle or a specified angle if provided. In this context, the rotation operation affects only the X and Y coordinates of the points while keeping the Z coordinate unchanged. This rotation is implemented by applying a 2D rotation matrix to each point, as follows:
+
+$$
+\begin{align*}
+X' & = X \cos(\theta) - Y \sin(\theta) \\
+Y' & = X \sin(\theta) + Y \cos(\theta) \\
+Z' & = Z
+\end{align*}
+$$
+
+Here, theta represents the rotation angle in degrees. The rotated points P' are obtained by multiplying the original points P by the rotation matrix. This transformation effectively rotates the points around the origin (0,0) in the XY plane by the specified angle theta, allowing for various orientations of the point cloud data.
+
+The figure below illustrates a comparison between the original sample and the rotated sample rotated by 45 degrees.
 
 ![Original VS rotated subsample image](assets/original_vs_rotated_subsample_0.png)
 
