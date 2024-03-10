@@ -170,9 +170,9 @@ Our test results are the following:
 
 Test Results - Loss: 0.6857, Accuracy: 0.75, IoU: 0.19%. We may consider them fail in terms of the global semantic segmentation task.
 
-<img src="https://github.com/paula22on/3D_Scene_Segmentation/assets/55758205/0edb5f8e-4679-4ba4-88f1-56e90322260d" width="500" alt="cm">
-<img src="https://github.com/paula22on/3D_Scene_Segmentation/assets/55758205/207c6b11-f766-43fc-836e-7399f3db2718" width="500" alt="cm">
-<img src="https://github.com/paula22on/3D_Scene_Segmentation/assets/55758205/40960eef-aabb-4383-809a-132321368201" width="500" alt="cm">
+<img src="https://github.com/paula22on/3D_Scene_Segmentation/assets/55758205/0edb5f8e-4679-4ba4-88f1-56e90322260d" width="300" alt="cm">
+<img src="https://github.com/paula22on/3D_Scene_Segmentation/assets/55758205/207c6b11-f766-43fc-836e-7399f3db2718" width="300" alt="cm">
+<img src="https://github.com/paula22on/3D_Scene_Segmentation/assets/55758205/40960eef-aabb-4383-809a-132321368201" width="300" alt="cm">
 
 ### Data balancing + augmentation 
 For the next phase, we are using balancing on the original dataset during preprocessing on training data. Also we are augmenting our training data by performing random rotation on the pre-processing module, as it would give us an advantage over more training data.
