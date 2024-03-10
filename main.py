@@ -275,10 +275,9 @@ def main():
     average_test_loss = sum(epoch_test_loss) / len(epoch_test_loss)
     average_test_accuracy = sum(epoch_test_acc) / len(epoch_test_acc)
     average_test_iou = sum(epoch_test_iou) / len(epoch_test_iou)
-    avg_test_iou_per_class = {i: [] for i in range(NUM_CLASSES_SEGMENTATION)}
+    avg_test_iou_per_class = []
     for cls in range(NUM_CLASSES_SEGMENTATION):
-        avg_test_iou_per_class[cls].append(np.mean(epoch_test_iou_per_class[cls]))
-
+                avg_test_iou_per_class.append(np.mean(epoch_test_iou_per_class[cls]))
     # Print the results
     print(
         f"Test Results - Loss: {average_test_loss:.4f}, Accuracy: {average_test_accuracy:.2f}, IoU: {average_test_iou:.2f}%"
@@ -347,19 +346,6 @@ def main():
         ),
     )
 
-    # Save ious per class in train
-    iou_class_file = open("evaluation/train_iou_class.txt", "a")
-    for cls, iou in train_iou_per_class.items():
-        iou_class_file.write(f"{class_names[cls]}: iou = {iou[-1]:.4f}\n")
-        iou_class_file.flush()
-    iou_class_file.close()
-
-    # Save ious per classin test
-    iou_class_file = open("evaluation/test_iou_class.txt", "a")
-    for cls, iou in test_iou_per_class.items():
-        iou_class_file.write(f"{class_names[cls]}: iou = {iou[-1]:.4f}\n")
-        iou_class_file.flush()
-    iou_class_file.close()
 
 
 if __name__ == "__main__":
