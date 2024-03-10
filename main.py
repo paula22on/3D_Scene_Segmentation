@@ -114,7 +114,7 @@ def main():
     test_iou_per_class = {
         i: [] for i in range(NUM_CLASSES_SEGMENTATION)
     }  # IoU per class for testing/validation
-    iou_log_file = open("iou_log.txt", "a")  # File to log IoU over epochs
+    iou_log_file = open("evaluation/iou_log.txt", "a")  # File to log IoU over epochs
 
     # Training and validation loop
     for epoch in tqdm(range(epochs)):
