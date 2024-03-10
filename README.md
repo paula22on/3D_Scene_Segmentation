@@ -138,13 +138,19 @@ Several key innovations make PointNet exceptionally effective in handling point 
 The complete architecture can be seen in the following image,
 ![image](https://miro.medium.com/v2/resize:fit:1400/format:webp/1*lFnrIqmV_47iRvQcY3dB7Q.png)
 
-
 ### First test with ShapeNet dataset
-- [ ] **TODO:** Grafics de la shapenet, resultats en plots, confusion matrix, T-net
-- [ ] **TODO:** Add image of ShapeNet dataset
+We initiated our exploration of the PointNet architecture with a straightforward classification task, utilizing the ShapeNetCore dataset from the larger ShapeNet collection. This subset offers a well-curated selection of single, clean 3D models, each manually verified for category accuracy and alignment, spanning 55 common object categories with around 51,300 unique models. After conducting training over 80 epochs, we achieved an accuracy of 92.2% and a loss of 0.06. Below, we present the confusion matrix for further insight into the model's performance:
+
+<img src="https://github.com/paula22on/3D_Scene_Segmentation/assets/117265561/4a39e610-2d8a-4ad1-a80f-7def538fa4c6" width="500" alt="cm">
+
+In addition to evaluating the PointNet architecture's classification capabilities using the ShapeNetCore dataset, this testing phase also served to deepen our understanding of the T-Net component within PointNet. The T-Net, crucial for ensuring the model's invariance to geometric transformations of the input point clouds, was closely examined. To illustrate the transformations learned and applied by the T-Net, we've included a series of images showcasing these adjustments. These visual representations not only highlight the T-Net's functionality but also demonstrate its impact on the model's ability to accurately interpret and classify 3D shapes.
+
+<img src="https://github.com/paula22on/3D_Scene_Segmentation/assets/117265561/7dd84a8f-4b6f-4878-a530-518a4064561d" width="300" alt="cm">  <img src="https://github.com/paula22on/3D_Scene_Segmentation/assets/117265561/bf2259a1-1f73-40e8-901e-75380f4fe4a1" width="300" alt="cm"> 
+<img src="https://github.com/paula22on/3D_Scene_Segmentation/assets/117265561/fdc6f2e8-bedc-4726-90b6-9cde9b4cfd54" width="300" alt="cm"> <img src="https://github.com/paula22on/3D_Scene_Segmentation/assets/117265561/d906c4e0-584b-49d2-9a9d-a533da07ee8b" width="300" alt="cm"> 
 
 ### Layer upsize
-- [ ] **TODO:** Explain potential size changes to originial PointNet
+
+For simpler tasks, such as the classification challenge we undertook with the ShapeNetCore dataset, the PointNet architecture can be effectively streamlined by reducing the number of layers. This modification maintains high accuracy while optimizing computational efficiency. Conversely, for more complex applications, such as segmentation tasks that demand a finer understanding of point cloud data, the architecture can be scaled up by increasing the number of layers. This flexibility allows PointNet to be tailored to a wide range of demands, balancing performance and computational resources according to the specific requirements of the task at hand.
 
 ## Results - ALBERT
 
