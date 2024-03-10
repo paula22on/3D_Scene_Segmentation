@@ -166,7 +166,9 @@ Our validation is the same as evaluation but during the training loop, only for 
 Training on the original dataset without any changes. The model only predicts 3 classes out of 9. No augmentation or loss method is performed so the majority classes in terms of distribution have all the impact for the model. 
 We can start to point out that the model keeps the structure of the city merely intact, but the majority classes are the only ones predicted for the moment.
 Added subplots are shown in therm of understanding our results (original on the right, predicted on the left).
+
 Our test results are the following:
+
 Test Results - Loss: 0.6857, Accuracy: 0.75, IoU: 0.19%, but we may consider them fail in terms of the global semantic segmentation task.
 
 <img src="https://github.com/paula22on/3D_Scene_Segmentation/assets/55758205/0edb5f8e-4679-4ba4-88f1-56e90322260d" width="500" alt="cm">
