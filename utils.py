@@ -218,7 +218,7 @@ def plot_confusion_matrix(total_confusion_matrix, class_names, save_to_file=None
     plt.close(fig)
 
 
-# --- FILE HANDLIN
+# --- FILE HANDLING
 def convert_las_to_csv(path):
     """
     Converts a LAS file to a CSV file with columns for X, Y, Z coordinates and classification.
@@ -358,7 +358,7 @@ def batch_random_rotation_z_axis(points):
 
 
 # --- VISUALIZATION
-def prepare_3d_subplot(ax, points, labels, verbose=True):
+def prepare_3d_subplot(ax, points, labels, verbose=True, top_view=False):
     """
     Prepares a 3D subplot with labeled point cloud data.
 
@@ -379,10 +379,10 @@ def prepare_3d_subplot(ax, points, labels, verbose=True):
     for label in labels:
         L.append(label)
 
-    X = np.array(X)
-    Y = np.array(Y)
-    Z = np.array(Z)
-    L = np.array(L)
+    X = np.array(X).astype(float)
+    Y = np.array(Y).astype(float)
+    Z = np.array(Z).astype(float)
+    L = np.array(L).astype(float)
     cdict = {
         1: "blue",  # Ground
         2: "green",  # Vegetation
@@ -399,7 +399,7 @@ def prepare_3d_subplot(ax, points, labels, verbose=True):
             X[L == classification],
             Y[L == classification],
             Z[L == classification],
-            s=25,
+            s=5 if top_view else 25,
             c=color,
         )
 
@@ -407,30 +407,21 @@ def prepare_3d_subplot(ax, points, labels, verbose=True):
         ax.set_xlabel("X-axis")
         ax.set_ylabel("Y-axis")
         ax.set_zlabel("Z-axis")
+        # Add legend
     else:
         ax.set_xticks([])
         ax.set_yticks([])
         ax.set_zticks([])
 
-    # ax.view_init(90, 0)
+    if top_view:
+        ax.view_init(90, 0)
+        ax.set_zticks([])
 
 
-def visualize_sample(points, labels, save_to_file=None, phase="None"):
-    """
-    Visualizes a sample of point cloud data in 3D space.
-
-    Parameters:
-    - points (list of lists): The point cloud data, where each point is represented as [x, y, z].
-    - labels (list): The labels for each point in the point cloud.
-    - save_to_file (str, optional): Path to save the plot to a file. If None, the plot is shown instead.
-    - phase (str, optional): Describes the phase or context of the visualization (e.g., "Testing").
-
-    Returns:
-    - None
-    """
+def visualize_sample(points, labels, save_to_file = None, phase = None, top_view = False):
     fig = plt.figure(figsize=(15, 10))
     ax = fig.add_subplot(111, projection="3d")
-    prepare_3d_subplot(ax, points, labels)
+    prepare_3d_subplot(ax, points, labels, top_view=top_view)
 
     if phase == "Testing":
         plt.title("Predicted output")
@@ -438,6 +429,7 @@ def visualize_sample(points, labels, save_to_file=None, phase="None"):
 
     if save_to_file:
         plt.savefig(save_to_file)
+        plt.close()
     else:
         plt.show()
 
@@ -471,17 +463,7 @@ def visualize_sample_by_path(path):
     visualize_sample(points, labels)
 
 
-def visualize_100_samples(dirpath, start_idx):
-    """
-    Visualizes 100 point cloud samples from CSV files located in a directory, starting from a specified index.
-
-    Parameters:
-    - dirpath (str): Directory path containing the CSV files.
-    - start_idx (int): The starting index to begin visualization.
-
-    Returns:
-    - None
-    """
+def visualize_100_subsamples(dirpath, start_idx):
     samples = []
 
     fig, axes = plt.subplots(10, 10, figsize=(10, 10), subplot_kw={"projection": "3d"})
@@ -496,3 +478,20 @@ def visualize_100_samples(dirpath, start_idx):
 
     plt.tight_layout()
     plt.show()
+
+
+def visualize_100_concatenated_samples(sample_data_path, sample_image_path, filename_no_idx, start_idx):
+
+    filelist = [f'{sample_data_path}/{filename_no_idx}_{i}.csv' for i in range(start_idx,start_idx+100)]
+
+    outpath_csv = f'{sample_data_path}/{filename_no_idx}_{start_idx}_to_{start_idx+100-1}.csv'
+    outpath_png = f'{sample_image_path}/{filename_no_idx}_{start_idx}_to_{start_idx+100-1}.png'
+
+    with open(outpath_csv, 'w') as outfile:
+        for filename in filelist:
+            with open(filename, 'r') as infile:
+                for line in infile:
+                    outfile.write(line)
+
+    points, labels = read_sample_from_csv(outpath_csv)
+    visualize_sample(points, labels, save_to_file=outpath_png, top_view=True)
