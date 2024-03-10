@@ -169,7 +169,7 @@ Added subplots are shown in therm of understanding our results (original on the 
 
 Our test results are the following:
 
-Test Results - Loss: 0.6857, Accuracy: 0.75, IoU: 0.19%, but we may consider them fail in terms of the global semantic segmentation task.
+Test Results - Loss: 0.6857, Accuracy: 0.75, IoU: 0.19%. We may consider them fail in terms of the global semantic segmentation task.
 
 <img src="https://github.com/paula22on/3D_Scene_Segmentation/assets/55758205/0edb5f8e-4679-4ba4-88f1-56e90322260d" width="500" alt="cm">
 <img src="https://github.com/paula22on/3D_Scene_Segmentation/assets/55758205/207c6b11-f766-43fc-836e-7399f3db2718" width="500" alt="cm">
@@ -177,19 +177,20 @@ Test Results - Loss: 0.6857, Accuracy: 0.75, IoU: 0.19%, but we may consider the
 <img src="https://github.com/paula22on/3D_Scene_Segmentation/assets/55758205/40960eef-aabb-4383-809a-132321368201" width="500" alt="cm">
 
 ### Data balancing + augmentation 
-For the next phase, we are using balancing on the original dataset during preprocessing on train.
-ing data. Also we are augmenting our training data by performing random rotation on the pre-processing module, as it would give us an advantage over more training data.
+For the next phase, we are using balancing on the original dataset during preprocessing on training data. Also we are augmenting our training data by performing random rotation on the pre-processing module, as it would give us an advantage over more training data.
 We also made re-ajustment on the model architecture, in terms of upsizing the layers of the architecture, in order to be more suitable for our task, as exlained above. Upsizing occurs mostly inside the T-Net layers.
 
 Our test results are the following:
 
-Test Results - Loss: 1.2387, Accuracy: 0.63, IoU: 0.17%. In this case we are indeed predicting nearly all classes for our task, which means that some following tunning can be performed, but the results are in a positive matter.
+Test Results - Loss: 1.2387, Accuracy: 0.63, IoU: 0.17%. In this case we are indeed predicting nearly all classes for our task, which means that some following tunning can be performed, but the results are presented in a positive matter.
 
 <img src="https://github.com/paula22on/3D_Scene_Segmentation/assets/55758205/d6b84bc9-b06b-47ea-b4ff-8532e106a41f" width="500" alt="cm">
 <img src="https://github.com/paula22on/3D_Scene_Segmentation/assets/55758205/f77abd50-ab05-4502-879f-8513ec5c29b0" width="500" alt="cm">
 
 ### Inverse Weighted Loss
-For the sake of investigation, we also tried to train our model use the inverse weighted loss on the original data, (without any balancing nor augmentation). It performs positively for non majority distributed classes, but it lacks coherence in terms of prediction. At this point our model doesn't predict neither vegetation or ground correctly, which obviously discard the model. We also performed random rotation for every epoch, as means of generalizing best our data. It did improve our training process, but it wasn't enough for our model to get good results for both minority and majority classes. 
+For the sake of investigation, we also tried to train our model using the inverse weighted loss on the original data, (without any balancing nor augmentation). It performs positively for non majority distributed classes, but it lacks coherence in terms of prediction. At this point our model doesn't predict neither vegetation or ground correctly, which obviously discards the model. 
+
+We also performed random rotation for every epoch, as means of generalizing best our data. It did improve our training process, but it wasn't enough for our model to get good results for both minority and majority classes. 
 
 ### Final results (best case)
 - [ ] **TODO:** Add plots and images of the results
