@@ -66,7 +66,7 @@ PointNet is a pioneering deep learning architecture for processing unstructured 
 
 ## DALES dataset
 
-- [ ] **TODO:** Explicar DALES i tot el preprocessing i posar visualitzacions
+- [ ] **TODO:** Explicar DALES i tot el preprocessing i posar visualitzacions - LAURA
 
 The DALES dataset is an aerial LiDAR collection featuring over half a billion hand-labeled points across 10 km2 and eight distinct object categories. Unlike other datasets, DALES focuses on aerially collected data, introducing unique challenges and opportunities for 3D urban modeling and large-scale surveillance applications. With its vast scale and high resolution, DALES provides an extensive base for evaluating and developing 3D deep learning algorithms.
 
@@ -95,7 +95,7 @@ In order to prepare the dataset for use with the PointNet architecture, we tailo
 5. **Data Augmentation - Rotation.** To improve the robustness of our model, we introduce variability into the training data through random rotations about the Z-axis. This form of data augmentation simulates a wider variety of scenarios, helping the model learn to recognize structures from different orientations.
 6. **Exporting Processed Data** After preprocessing, the data is exported into CSV files, organized by sample type (train or test) and further divided based on the subsampling strategy. This structured format makes it easy to manage and access the data during training and evaluation phases.
 
-### Downsampling
+### Downsampling 
 - [ ] **TODO:** Add image of divided tiles
 
 #### Random sampling
@@ -108,7 +108,7 @@ In order to prepare the dataset for use with the PointNet architecture, we tailo
 - [ ] **TODO:** Add image of balanced sample VS rotated 45 degrees VS rotated 90 degrees
 
 
-## Architecture (PointNet)
+## Architecture (PointNet) - PAULA
 - [ ] **TODO:** Explicar architecture
 - [ ] **TODO:** Add image of PointNet architecture
 
@@ -119,7 +119,7 @@ In order to prepare the dataset for use with the PointNet architecture, we tailo
 ### Layer upsize
 - [ ] **TODO:** Explain potential size changes to originial PointNet
 
-## Results
+## Results - ALBERT
 
 - [ ] **TODO:** Complete this section. Explain the training process, including hyperparameters, data augmentation techniques, and any other important details. Provide examples of how to train the model with different settings.
 
@@ -149,7 +149,8 @@ In order to prepare the dataset for use with the PointNet architecture, we tailo
 
 ## How to
 
-### Requirements
+### Requirements 
+- [ ] **TODO:** Update packages + creation of venv - PAULA
 - Python 3.8 or later
 - PyTorch 1.7.0 or later
 - Matplotlib
@@ -186,6 +187,8 @@ dales_las/
 
 #### Data-preprocessing
 
+- [ ] **TODO:** Add preprocessing arguments - PAULA
+
 To effectively manage a large dataset, downsampling is necessary. This project segments each sample into 100 sub-divisions using a dedicated script.
 
 Use the `data_preprocessing.py` script for data pre-processing. Run the script by specifying the path to the dataset and the divider values.
@@ -221,15 +224,14 @@ Example command:
 ```
 python3 data_visualization.py data/train/10_divisions_0.csv
 ```
-
-- [ ] **TODO:** Make sure this is up to date. Data visualization is not a PY script anymore, but we can add it somewhere.
+- [ ] **TODO:** modify command 
 
 
 ### How to train the model
 
 #### Setting the environment in Google Cloud?
 
-- [ ] **TODO:** Is this needed?
+- [ ] **TODO:** Is this needed? - DANIEL 
 
 
 #### Running training scripts
@@ -243,6 +245,7 @@ Run the main script to start training or evaluation:
 ```
 python main.py
 ```
+- [ ] **TODO:** Add explanation of config file - PAULA
 
 #### Customization options
 
@@ -261,20 +264,22 @@ After training, use the visualization functions to analyze the performance:
 plot_losses(train_loss, test_loss)
 ```
 
-- [ ] **TODO:** Add a script for visualization?
-
+- [ ] **TODO:** Add where the images are saved and which images - PAULA
 
 ### How to evaluate the model
+
 #### Running the evaluation scripts
+- [ ] **TODO:** Add trained model in drive and add in GitHub explanation in how to use it - LAURA
+
 #### Interpreting the results
 
 ## Conclusions
 
-- [ ] **TODO:** Complete this section
+- [ ] **TODO:** Complete this section - TOTS
 
 ## Future work
 
-- [ ] **TODO:** Complete this section
+- [ ] **TODO:** Complete this section - TOTS
 
 
 
