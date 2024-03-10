@@ -164,13 +164,16 @@ Our validation is the same as evaluation but during the training loop, only for 
 
 ### Naive approach 
 Training on the original dataset without any changes. The model only predicts 3 classes out of 9. No augmentation or loss method is performed so the majority classes in terms of distribution have all the impact for the model. 
+We can start to point out that the model keeps the structure of the city merely intact, but the majority classes are the only ones predicted for the moment.
 
 <img src="https://github.com/paula22on/3D_Scene_Segmentation/assets/55758205/0edb5f8e-4679-4ba4-88f1-56e90322260d" width="500" alt="cm">
-<img src="https://github.com/paula22on/3D_Scene_Segmentation/assets/55758205/207c6b11-f766-43fc-836e-7399f3db2718)" width="500" alt="cm">
+<img src="https://github.com/paula22on/3D_Scene_Segmentation/assets/55758205/207c6b11-f766-43fc-836e-7399f3db2718" width="500" alt="cm">
+<img src="https://github.com/paula22on/3D_Scene_Segmentation/assets/55758205/1766540a-99c7-492c-8641-0ee80b1c9e79" width="500" alt="cm">
 <img src="https://github.com/paula22on/3D_Scene_Segmentation/assets/55758205/fee27c5f-75c2-48ae-92b8-d8f80e1360e6" width="500" alt="cm">
 
 ### Data balancing + augmentation 
-For the next phase, we are using balancing on the original dataset during preprocessing on training data. Also we are augmenting our training data by performing random rotation on the pre-processing module, as it would give us an advantage over more training data.
+For the next phase, we are using balancing on the original dataset during preprocessing on train.
+ing data. Also we are augmenting our training data by performing random rotation on the pre-processing module, as it would give us an advantage over more training data.
 
 ### Inverse Weighted Loss
 For the sake of investigation, we also tried to train our model use the inverse weighted loss on the original data, (without any balancing nor augmentation). It performs positively for non majority distributed classes, but it lacks coherence in terms of prediction. At this point our model doesn't predict neither vegetation or ground correctly, which obviously discard the model. We also performed random rotation for every epoch, as means of generalizing best our data. It did improve our training process, but it wasn't enough for our model to get good results for both minority and majority classes. 
