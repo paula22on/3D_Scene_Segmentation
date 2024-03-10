@@ -191,6 +191,15 @@ For the sake of investigation, we also tried to train our model using the invers
 
 We also performed random rotation for every epoch, as means of generalizing best our data. It did improve our training process, but it wasn't enough for our model to get good results for both minority and majority classes. 
 
+Our test results are the following: 
+
+
+Test Results - Loss: 1.2973, Accuracy: 0.56, IoU: 0.15%.
+<img src="https://github.com/paula22on/3D_Scene_Segmentation/assets/55758205/f18e2fbc-fadf-45e9-ae87-64d74926918d" width="500" alt="cm">
+<img src="https://github.com/paula22on/3D_Scene_Segmentation/assets/55758205/15eba654-2576-4e24-95e5-4f1f83a933f6" width="500" alt="cm">
+
+
+
 ### Final results (best case)
 
 For the best model, we gathered the best performing method, which is balancing + aumentation on the preprocessing module, in order to amplify our train dataset. Then we also used the random rotation on every epoch, in terms of trying to generalize our learning better. 
