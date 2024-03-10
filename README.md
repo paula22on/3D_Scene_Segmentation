@@ -228,7 +228,7 @@ We also made re-ajustment on the model architecture, in terms of upsizing the la
 
 Our test results are the following:
 
-Test Results - Loss: 1.2387, Accuracy: 0.63, IoU: 0.17%. In this case we are indeed predicting nearly all classes for our task, which means that some following tunning can be performed, but the results are presented in a positive matter.
+Test Results - Loss: 1.2387, Accuracy: 0.63, IoU: 0.17%. In this case we are indeed predicting nearly all classes for our task, which means that some following tunning can be performed, but the results are presented in a positive manner.
 
 <img src="https://github.com/paula22on/3D_Scene_Segmentation/assets/55758205/d6b84bc9-b06b-47ea-b4ff-8532e106a41f" width="500" alt="cm">
 <img src="https://github.com/paula22on/3D_Scene_Segmentation/assets/55758205/f77abd50-ab05-4502-879f-8513ec5c29b0" width="500" alt="cm">
