@@ -181,7 +181,7 @@ def process(path, sample, idx, sample_type, divider, balance, rotate):
 
 if __name__ == "__main__":
     # Setup the argument parser and read arguments
-    parser = argparse.ArgumentParser(description="Description of your script")
+    parser = argparse.ArgumentParser(description="Data pre-processing script")
     parser.add_argument(
         "dir_path",
         type=str,
