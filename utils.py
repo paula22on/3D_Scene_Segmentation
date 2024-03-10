@@ -358,7 +358,7 @@ def batch_random_rotation_z_axis(points):
 
 
 # --- VISUALIZATION
-def prepare_3d_subplot(ax, points, labels, verbose=True, top_view=False):
+def prepare_3d_subplot(ax, points, labels, verbose=True):
     """
     Prepares a 3D subplot with labeled point cloud data.
 
@@ -379,19 +379,29 @@ def prepare_3d_subplot(ax, points, labels, verbose=True, top_view=False):
     for label in labels:
         L.append(label)
 
-    X = np.array(X).astype(float)
-    Y = np.array(Y).astype(float)
-    Z = np.array(Z).astype(float)
-    L = np.array(L).astype(float)
+    X = np.array(X)
+    Y = np.array(Y)
+    Z = np.array(Z)
+    L = np.array(L)
     cdict = {
         1: "blue",  # Ground
         2: "green",  # Vegetation
         3: "purple",  # Cars
         4: "orange",  # Trucks
         5: "yellow",  # Powerlines
-        6: "black",  # Fences
+        6: "gray",  # Fences
         7: "pink",  # Poles
         8: "red",  # Buildings
+    }
+    clabel = {
+        1: "Ground",  # Ground
+        2: "Vegetation",  # Vegetation
+        3: "Cars",  # Cars
+        4: "Trucks",  # Trucks
+        5: "Powerlines",  # Powerlines
+        6: "Fences",  # Fences
+        7: "Poles",  # Poles
+        8: "Buildings",  # Buildings
     }
     for classification in np.unique(L)[1:]:
         color = cdict.get(classification, "black")
@@ -399,23 +409,22 @@ def prepare_3d_subplot(ax, points, labels, verbose=True, top_view=False):
             X[L == classification],
             Y[L == classification],
             Z[L == classification],
-            s=5 if top_view else 25,
+            s=25,
             c=color,
+            label = clabel.get(classification, "black")
         )
 
     if verbose:
         ax.set_xlabel("X-axis")
         ax.set_ylabel("Y-axis")
         ax.set_zlabel("Z-axis")
-        # Add legend
     else:
         ax.set_xticks([])
         ax.set_yticks([])
         ax.set_zticks([])
 
-    if top_view:
-        ax.view_init(90, 0)
-        ax.set_zticks([])
+    ax.legend()
+    # ax.view_init(90, 0)
 
 
 def visualize_sample(points, labels, save_to_file = None, phase = None, top_view = False):
