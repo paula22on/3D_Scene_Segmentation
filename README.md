@@ -193,9 +193,11 @@ We also performed random rotation for every epoch, as means of generalizing best
 
 ### Final results (best case)
 
+For the best model, we gathered the best performing method, which is balancing + aumentation on the preprocessing module, in order to amplify our train dataset. Then we also used the random rotation on every epoch, in terms of trying to generalize our learning better. 
+
 <img src="https://github.com/paula22on/3D_Scene_Segmentation/assets/55758205/a061828d-6cef-4477-885c-83debbc4586a" width="500" alt="cm">
 <img src="https://github.com/paula22on/3D_Scene_Segmentation/assets/55758205/e3b88b5b-7275-44f5-88ce-71817c76867a" width="500" alt="cm">
-
+<img src="https://github.com/paula22on/3D_Scene_Segmentation/assets/55758205/1b3f6a93-b793-4c4b-8d3a-566a3c25a267" width="500" alt="cm">
 
 
 
