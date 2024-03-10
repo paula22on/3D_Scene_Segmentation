@@ -267,19 +267,23 @@ dales_las/
 
 - [ ] **TODO:** Add preprocessing arguments - PAULA
 
-To effectively manage a large dataset, downsampling is necessary. This project segments each sample into 100 sub-divisions using a dedicated script.
+To effectively manage a large dataset, downsampling is necessary. This project segments each sample into 100 sub-divisions using a dedicated script (data_preprocessing.py). This scripts also incorporates options for class balancing and applying randome rotation for data augmentation.
 
-Use the `data_preprocessing.py` script for data pre-processing. Run the script by specifying the path to the dataset and the divider values.
+Use the script with the following arguments:
+- `dir_path`: Path to the directory containing the DALES dataset in .las format.
+- `divider`: Number used for subsampling the dataset.
+- `--balance` (optional): Flag to balance the classes in the dataset.
+- `--rotate` (optional): Flag to apply random rotation around the Z-axis for the training data.
 
 Example command:
 
 ```
-python3 data_preprocessing.py /home/dales_las 10
+python3 data_preprocessing.py /home/dales_las 10 --balance --rotate
+
 ```
+Here, /home/dales_las is the dataset directory path, 10 is the divider value for subsampling, --balance enables class balancing, and --rotate applies random rotations to the training data.
 
-In this example, `/home/dales_las` is the path to the dataset, and 10 is the divider value.
-
-The script divides each sample into 100 cells (10 for the x-axis and 10 for the y-axis). Subsamples will be generated in .csv format and stored in a new `data/` folder, within the `train/` and `test/` sub-folders respectively.
+The script processes each LAS file in the train and test directories. Subsamples are generated in .csv format and stored in a new data/ folder, within train/ and test/ subfolders:
 
 ```
 data/
@@ -294,16 +298,6 @@ data/
 ```
 
 These steps will preprocess the dataset, making it suitable for further analysis and modeling.
-
-To visualize the subsamples, just run the `data_visualization.py` script by specifying the path to the data subsample.
-
-Example command:
-
-```
-python3 data_visualization.py data/train/10_divisions_0.csv
-```
-- [ ] **TODO:** modify command 
-
 
 ### How to train the model
 
