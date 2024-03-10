@@ -165,6 +165,7 @@ Our validation is the same as evaluation but during the training loop, only for 
 ### Naive approach 
 Training on the original dataset without any changes. The model only predicts 3 classes out of 9. No augmentation or loss method is performed so the majority classes in terms of distribution have all the impact for the model. 
 We can start to point out that the model keeps the structure of the city merely intact, but the majority classes are the only ones predicted for the moment.
+Added subplots are shown in therm of understanding our results (original on the right, predicted on the left).
 
 <img src="https://github.com/paula22on/3D_Scene_Segmentation/assets/55758205/0edb5f8e-4679-4ba4-88f1-56e90322260d" width="500" alt="cm">
 <img src="https://github.com/paula22on/3D_Scene_Segmentation/assets/55758205/207c6b11-f766-43fc-836e-7399f3db2718" width="500" alt="cm">
