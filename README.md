@@ -115,12 +115,11 @@ This division process considers only the X and Y dimensions, leaving the Z dimen
 
 The image below illustrates the top left corner of the first scene in DALES.
 
-![Original tile left corner image](assets/original_tile_top_left_corner.png)
+<img src="https://github.com/paula22on/3D_Scene_Segmentation/assets/36137633/bff89082-2da4-475e-8571-d60c9c2524d7" width="500" alt="original_tile_top_left_corner">
 
 This area is processed and subdivided into 5 distinct samples, as depicted below.
 
-![Subsampling image](assets/original_subsamples_0_to_4.png)
-
+<img src="https://github.com/paula22on/3D_Scene_Segmentation/assets/36137633/d42c17bb-956e-4267-b3fe-18aa01e3c28a" width="500" alt="original_samples_0_to_4">
 
 #### Random sampling
 
@@ -128,20 +127,19 @@ As part of the subsampling process, each sample is further reduced through rando
 
 Below, we present a comparison between an original subsample (a single division of the original tile) containing a large number of points and a subsample where 2048 points have been randomly selected.
 
-![Original VS random subsample image](assets/original_vs_random_subsample_0.png)
-
+<img src="https://github.com/paula22on/3D_Scene_Segmentation/assets/36137633/3bd77f76-2fd3-4601-be91-b2b91a8d1831" width="500" alt="original_vs_random_subsample_0">
 
 ### Data balancing
 
 Class imbalance in point clouds poses a challenge as it can lead to biased model predictions and reduced performance on minority classes. In our dataset samples, we observe significant class imbalance, with an abundance of points for majority classes like ground, vegetation, and buildings, compared to minority classes such as poles, power lines, and fences. 
 
-![Class imbalance in subsample image](assets/class_imbalance_subsample_0.png)
+<img src="https://github.com/paula22on/3D_Scene_Segmentation/assets/36137633/5fe62d8c-bc31-41ef-a8b3-f09432dcbf43" width="500" alt="class_imbalance_subsample_0">
 
 To mitigate this issue, we address class imbalance by modifying training samples. For each class, we compute the average number of points. Subsequently, if the number of points for a class is below the average, we replicate a random point of that class to augment the sample. Otherwise, if the number of points exceeds the average, we randomly select N points, where N is the average.
 
 The combination of the random sampling method described earlier with this balance, results in the representation we showcase below. The figure illustrates the original subsample on the left and the balanced subsample after the selection of 2048 points on the right.
 
-![Original VS balanced subsample image](assets/original_vs_balanced_subsample_0.png)
+<img src="https://github.com/paula22on/3D_Scene_Segmentation/assets/36137633/c632e38c-3d21-446e-8769-a972288c90a6" width="500" alt="original_vs_balanced_subsample_0">
 
 ### Data rotation
 
@@ -163,8 +161,7 @@ Here, theta represents the rotation angle in degrees. The rotated points P' are 
 
 The figure below illustrates a comparison between the original sample and the rotated sample rotated by 45 degrees.
 
-![Original VS rotated subsample image](assets/original_vs_rotated_subsample_0.png)
-
+<img src="https://github.com/paula22on/3D_Scene_Segmentation/assets/36137633/5a8d6be6-8e50-463c-910d-64bed0eb5cc9" width="500" alt="original_vs_rotated_subsample_0">
 
 ## Architecture (PointNet)
 PointNet is a pioneering deep neural network designed specifically for processing 3D point clouds, which are collections of data points defined in a three-dimensional coordinate system. Developed by researchers at Stanford University in 2016, PointNet stands out as the first neural network architecture to directly work with 3D point clouds, eliminating the need for pre-processing steps such as voxelization or rendering. This innovative approach enables PointNet to efficiently learn both the global and local features of point clouds, making it highly effective for a wide range of applications, including object classification, part segmentation, and scene semantic parsing.
@@ -442,7 +439,7 @@ List of visualizations:
 - IoU
 - IoU per class
 
-In this segment of the code you can see the anem and location for each plot:
+In this segment of the code you can see the name and location for each plot:
 
 ```
 plot_losses(
