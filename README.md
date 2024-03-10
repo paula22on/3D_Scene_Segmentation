@@ -175,6 +175,7 @@ Added subplots are shown in therm of understanding our results (original on the 
 ### Data balancing + augmentation 
 For the next phase, we are using balancing on the original dataset during preprocessing on train.
 ing data. Also we are augmenting our training data by performing random rotation on the pre-processing module, as it would give us an advantage over more training data.
+We also made re-ajustment on the model architecture, in terms of upsizing the layers of the architecture, in order to be more suitable for our task, as exlained above. Upsizing occurs mostly inside the T-Net layers.
 
 ### Inverse Weighted Loss
 For the sake of investigation, we also tried to train our model use the inverse weighted loss on the original data, (without any balancing nor augmentation). It performs positively for non majority distributed classes, but it lacks coherence in terms of prediction. At this point our model doesn't predict neither vegetation or ground correctly, which obviously discard the model. We also performed random rotation for every epoch, as means of generalizing best our data. It did improve our training process, but it wasn't enough for our model to get good results for both minority and majority classes. 
