@@ -195,6 +195,7 @@ Our test results are the following:
 
 
 Test Results - Loss: 1.2973, Accuracy: 0.56, IoU: 0.15%.
+
 <img src="https://github.com/paula22on/3D_Scene_Segmentation/assets/55758205/f18e2fbc-fadf-45e9-ae87-64d74926918d" width="500" alt="cm">
 <img src="https://github.com/paula22on/3D_Scene_Segmentation/assets/55758205/15eba654-2576-4e24-95e5-4f1f83a933f6" width="500" alt="cm">
 
