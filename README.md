@@ -264,6 +264,8 @@ We are selecting this model as our best performance model, as it incroporates th
 
 Our test results are the following:
 
+Test Results - Loss: 1.2624, Accuracy: 0.60, IoU: 0.18%
+
 
 <img src="https://github.com/paula22on/3D_Scene_Segmentation/assets/55758205/a061828d-6cef-4477-885c-83debbc4586a" width="500" alt="cm">
 <img src="https://github.com/paula22on/3D_Scene_Segmentation/assets/55758205/e3b88b5b-7275-44f5-88ce-71817c76867a" width="500" alt="cm">
@@ -523,7 +525,7 @@ After execution, various plots and 3D point cloud figures get stored within the 
 
 ## Conclusions
 
-During this project, we explored the PointNet architecture with the classificaction and the semantic segmentation task. A big challenge was accomplished, that is training a pointcloud model using a large dataset model, specially on the semantic segmentation task. Other challenges and milestone were achieves, as we extracted and learned different resources and limitations that the PointNet architecutre is offering us. 
+During this project, we explored the PointNet architecture with the classificaction and the semantic segmentation task. A big challenge was accomplished, that is training a pointcloud model using a large dataset model, specially on the semantic segmentation task. Other challenges and milestone were achieved, as we extracted and learned different resources and limitations that the PointNet architecutre offers and lacks. 
 
 We achieved a high level experimenting with 3d data, as all predicted results and different stages were acquired visually in terms of understanding our model and its performance better. 
 
