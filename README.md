@@ -154,11 +154,13 @@ For simpler tasks, such as the classification challenge we undertook with the Sh
 
 ## Results - ALBERT
 
-- [ ] **TODO:** Complete this section. Explain the training process, including hyperparameters, data augmentation techniques, and any other important details. Provide examples of how to train the model with different settings.
+We are training the dataset with a PointNet model using an NLLLoss or the Inverse Weighted Cross Entropy Loss. For the batch size, using 32 as batch size is expected for this kind of problem where literature expects not a great number of batch sizes for preventing overfitting. 
 
-- [ ] **TODO:** Share the results of your experiments, including any visualizations or plots. Compare the performance of your model with state-of-the-art methods if applicable.
+We also set an Adam optimizer with a learning rate of 0.001. A number of 80 epochs is a suitable number for this kind of project, as an optimal loss is not expected, only a good generalization of the task.
 
-- [ ] **TODO:** Describe how to evaluate the model's performance on a validation or test dataset. Include metrics used for evaluation and how to interpret the results.
+We are evaluating our model with the accuracy metric, iou metric per class, mean iou, and the confusion matrix. 
+
+Our validation is the same as evaluation but during the training loop, only for validation data. A remark must be done, the augmentation process of rotating data for every epoch, is done on training and validation data. 
 
 ### Naive approach 
 Training on the original dataset without any changes. The model only predicts 3 classes out of 9. No augmentation or loss method is performed so the majority classes in terms of distribution have all the impact for the model. 
