@@ -30,7 +30,7 @@ def main(args):
 
     SEGMENTATION = True
     WEIGHTED_LOSS = False
-    NUM_POINTS = 4096
+    NUM_POINTS = 2048 #4096
     NUM_CLASSES = 9
     NUM_TEST_TILES = 11
 
