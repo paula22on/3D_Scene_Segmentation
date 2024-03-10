@@ -187,6 +187,24 @@ def plot_iou_per_class(iou_per_class, class_names, phase="Testing", save_to_file
     else:
         plt.show()
 
+def plot_iou_per_class_final(iou_per_class, class_names, phase="Testing", save_to_file=None):
+    """
+    Plots the IoU for each class .
+
+    Parameters:
+        iou_per_class (dict): Dictionary where keys are class indices and values are lists of IoU values.
+        class_names (list): List of class names corresponding to indices.
+        phase (str): Phase of the plot, "Testing" or another phase to adjust the title.
+        save_to_file (str, optional): Path to save the plot image. If None, the plot is shown.
+    """
+    plt.figure(figsize=(10, 7))
+    plt.bar(class_names, iou_per_class, color ='maroon', 
+        width = 0.4)
+    plt.xlabel("Label")
+    plt.ylabel("mIoU")
+    plt.title("IoU per label on testing")
+    plt.savefig(save_to_file)
+    plt.close()
 
 def plot_confusion_matrix(total_confusion_matrix, class_names, save_to_file=None):
     """
