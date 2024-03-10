@@ -66,7 +66,7 @@ PointNet is a pioneering deep learning architecture for processing unstructured 
 
 ## DALES dataset
 
-- [ ] **TODO:** Explicar DALES i tot el preprocessing i posar visualitzacions
+- [ ] **TODO:** Explicar DALES i tot el preprocessing i posar visualitzacions - LAURA
 
 The DALES dataset is an aerial LiDAR collection featuring over half a billion hand-labeled points across 10 km2 and eight distinct object categories. Unlike other datasets, DALES focuses on aerially collected data, introducing unique challenges and opportunities for 3D urban modeling and large-scale surveillance applications. With its vast scale and high resolution, DALES provides an extensive base for evaluating and developing 3D deep learning algorithms.
 
@@ -121,8 +121,23 @@ In order to prepare the dataset for use with the PointNet architecture, we tailo
 
 
 ## Architecture (PointNet)
-- [ ] **TODO:** Explicar architecture
-- [ ] **TODO:** Add image of PointNet architecture
+PointNet is a pioneering deep neural network designed specifically for processing 3D point clouds, which are collections of data points defined in a three-dimensional coordinate system. Developed by researchers at Stanford University in 2016, PointNet stands out as the first neural network architecture to directly work with 3D point clouds, eliminating the need for pre-processing steps such as voxelization or rendering. This innovative approach enables PointNet to efficiently learn both the global and local features of point clouds, making it highly effective for a wide range of applications, including object classification, part segmentation, and scene semantic parsing.
+
+The architecture of PointNet is ingeniously structured to cater to the unique challenges posed by point cloud data. It comprises two main components: a classification network and a segmentation network. The classification network is tasked with assigning a classification score for each of the predefined classes, enabling it to identify the type of object represented by the point cloud. On the other hand, the segmentation network combines global and local features to output per-point scores, which are essential for understanding the detailed structure of objects and their constituent parts.
+
+Several key innovations make PointNet exceptionally effective in handling point clouds:
+
+- **1. Spatial Transformation Network (T-Net)**: PointNet introduces a T-Net component that ensures invariance to geometric transformations. This means that the network can recognize objects regardless of their orientation, scale, or position in space, addressing a common challenge in 3D object recognition.
+
+- **2. Permutation Invariance**: Given that point clouds are inherently unordered, PointNet leverages a symmetric function, specifically max pooling, to ensure that its output is invariant to the order of the input points. This is crucial for processing point clouds directly without needing to impose an artificial order on the data.
+
+- **3. Local and Global Feature Aggregation**: PointNet captures the intricate details of point clouds by effectively merging local and global features. This allows the network to recognize fine-grained patterns and structures within the data, facilitating accurate segmentation and classification.
+
+- **4. Efficiency and Scalability**: By directly processing point clouds without the need for complex pre-processing, PointNet achieves high efficiency and scalability. This makes it suitable for handling large-scale point cloud data, which is common in applications such as autonomous driving, robotics, and 3D modeling.
+
+The complete architecture can be seen in the following image,
+![image](https://miro.medium.com/v2/resize:fit:1400/format:webp/1*lFnrIqmV_47iRvQcY3dB7Q.png)
+
 
 ### First test with ShapeNet dataset
 - [ ] **TODO:** Grafics de la shapenet, resultats en plots, confusion matrix, T-net
@@ -131,7 +146,7 @@ In order to prepare the dataset for use with the PointNet architecture, we tailo
 ### Layer upsize
 - [ ] **TODO:** Explain potential size changes to originial PointNet
 
-## Results
+## Results - ALBERT
 
 - [ ] **TODO:** Complete this section. Explain the training process, including hyperparameters, data augmentation techniques, and any other important details. Provide examples of how to train the model with different settings.
 
@@ -161,7 +176,8 @@ In order to prepare the dataset for use with the PointNet architecture, we tailo
 
 ## How to
 
-### Requirements
+### Requirements 
+- [ ] **TODO:** Update packages + creation of venv - PAULA
 - Python 3.8 or later
 - PyTorch 1.7.0 or later
 - Matplotlib
@@ -198,6 +214,8 @@ dales_las/
 
 #### Data-preprocessing
 
+- [ ] **TODO:** Add preprocessing arguments - PAULA
+
 To effectively manage a large dataset, downsampling is necessary. This project segments each sample into 100 sub-divisions using a dedicated script.
 
 Use the `data_preprocessing.py` script for data pre-processing. Run the script by specifying the path to the dataset and the divider values.
@@ -233,15 +251,14 @@ Example command:
 ```
 python3 data_visualization.py data/train/10_divisions_0.csv
 ```
-
-- [ ] **TODO:** Make sure this is up to date. Data visualization is not a PY script anymore, but we can add it somewhere.
+- [ ] **TODO:** modify command 
 
 
 ### How to train the model
 
 #### Setting the environment in Google Cloud?
 
-- [ ] **TODO:** Is this needed?
+- [ ] **TODO:** Is this needed? - DANIEL 
 
 
 #### Running training scripts
@@ -255,6 +272,7 @@ Run the main script to start training or evaluation:
 ```
 python main.py
 ```
+- [ ] **TODO:** Add explanation of config file - PAULA
 
 #### Customization options
 
@@ -273,20 +291,22 @@ After training, use the visualization functions to analyze the performance:
 plot_losses(train_loss, test_loss)
 ```
 
-- [ ] **TODO:** Add a script for visualization?
-
+- [ ] **TODO:** Add where the images are saved and which images - PAULA
 
 ### How to evaluate the model
+
 #### Running the evaluation scripts
+- [ ] **TODO:** Add trained model in drive and add in GitHub explanation in how to use it - LAURA
+
 #### Interpreting the results
 
 ## Conclusions
 
-- [ ] **TODO:** Complete this section
+- [ ] **TODO:** Complete this section - TOTS
 
 ## Future work
 
-- [ ] **TODO:** Complete this section
+- [ ] **TODO:** Complete this section - TOTS
 
 
 
