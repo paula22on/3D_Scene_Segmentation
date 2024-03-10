@@ -282,6 +282,8 @@ def read_sample_from_csv(path):
     with open(path, "r") as file:
         csv_reader = csv.reader(file)
         for row in csv_reader:
+            # point = [float(value) for value in row[:-1]]
+            # label = [float(value) for value in row[-1]]
             points.append(row[:-1])
             labels.append(row[-1])
 
@@ -431,7 +433,9 @@ def prepare_3d_subplot(ax, points, labels, verbose=True, top_view=False):
     if verbose:
         ax.set_xlabel("X-axis")
         ax.set_ylabel("Y-axis")
-        ax.set_zlabel("Z-axis")
+
+        if not top_view:
+            ax.set_zlabel("Z-axis")
     else:
         ax.set_xticks([])
         ax.set_yticks([])
@@ -533,6 +537,37 @@ def visualize_100_concatenated_samples(sample_data_path, sample_image_path, file
 
     outpath_csv = f'{sample_data_path}/{filename_no_idx}_{start_idx}_to_{start_idx+100-1}.csv'
     outpath_png = f'{sample_image_path}/{filename_no_idx}_{start_idx}_to_{start_idx+100-1}.png'
+
+    with open(outpath_csv, 'w') as outfile:
+        for filename in filelist:
+            with open(filename, 'r') as infile:
+                for line in infile:
+                    outfile.write(line)
+
+    points, labels = read_sample_from_csv(outpath_csv)
+    # points = torch.tensor(points)
+    # labels = torch.tensor(labels)
+    visualize_sample(points, labels, save_to_file=outpath_png, top_view=True)
+
+
+def visualize_10_concatenated_samples(sample_data_path, sample_image_path, filename_no_idx, start_idx):
+    """
+    Concatenates and visualizes 10 point cloud samples from CSV files located in a directory, starting from a specified index.
+    Stores the resulting image into the specified directory.
+
+    Parameters:
+    - sample_data_path (str): Directory path containing the CSV files and output path for the CSV containing concatenated samples.
+    - sample_image_path (str): Directory output path for the PNG resulting image.
+    - filename_no_idx (str): Name of the files without index. Expected to be the same for all 10 files.
+    - start_idx (int): The starting index to begin concatenation.
+    
+    Returns:
+    - None
+    """
+    filelist = [f'{sample_data_path}/{filename_no_idx}_{i}.csv' for i in range(start_idx,start_idx+10)]
+
+    outpath_csv = f'{sample_data_path}/{filename_no_idx}_{start_idx}_to_{start_idx+10-1}.csv'
+    outpath_png = f'{sample_image_path}/{filename_no_idx}_{start_idx}_to_{start_idx+10-1}.png'
 
     with open(outpath_csv, 'w') as outfile:
         for filename in filelist:
