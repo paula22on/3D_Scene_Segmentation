@@ -210,6 +210,13 @@ For the best model, we gathered the best performing method, which is balancing +
 
 We are selecting this model as our best performance model, as it incroporates the best methods/processes that we tried in order for the architecure to learn semantic segmenation. We can also select it by its performance on the mean IoU across majority and minority labels, as we rate performance higher on minority classes as long as majority classes don't lose coherence. 
 
+<img src="https://github.com/paula22on/3D_Scene_Segmentation/assets/55758205/da8288b7-65ef-4044-92d3-207e6e24e096" width="500" alt="cm">
+<img src="https://github.com/paula22on/3D_Scene_Segmentation/assets/55758205/c28f799d-033c-45fd-82bb-f5104f98b4d1" width="500" alt="cm">
+
+
+Our test results are the following:
+
+
 <img src="https://github.com/paula22on/3D_Scene_Segmentation/assets/55758205/a061828d-6cef-4477-885c-83debbc4586a" width="500" alt="cm">
 <img src="https://github.com/paula22on/3D_Scene_Segmentation/assets/55758205/e3b88b5b-7275-44f5-88ce-71817c76867a" width="500" alt="cm">
 <img src="https://github.com/paula22on/3D_Scene_Segmentation/assets/55758205/1b3f6a93-b793-4c4b-8d3a-566a3c25a267" width="500" alt="cm">
