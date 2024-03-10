@@ -105,6 +105,10 @@ The image below depicts the top view of one of the forty scenes provided by DALE
 
 ![Original tile image](assets/original_tile.png)
 
+We computed the ditribution of points across the complete dataset, for each category, diven the train/tast partition that was present on the original data. 
+![output](https://github.com/paula22on/3D_Scene_Segmentation/assets/55758205/981c1c15-2723-44de-8cbd-69052bf0a29f)
+
+All the following methods and results, have the awareness that there are 3 majority classes (ground, vegetation, buidlings) and other minority classes that may be more difficult to learn and predict correctly.
 
 ### Subsampling
 
