@@ -127,13 +127,13 @@ The architecture of PointNet is ingeniously structured to cater to the unique ch
 
 Several key innovations make PointNet exceptionally effective in handling point clouds:
 
-- **1. Spatial Transformation Network (T-Net)**: PointNet introduces a T-Net component that ensures invariance to geometric transformations. This means that the network can recognize objects regardless of their orientation, scale, or position in space, addressing a common challenge in 3D object recognition.
+- **Spatial Transformation Network (T-Net)**: PointNet introduces a T-Net component that ensures invariance to geometric transformations. This means that the network can recognize objects regardless of their orientation, scale, or position in space, addressing a common challenge in 3D object recognition.
 
-- **2. Permutation Invariance**: Given that point clouds are inherently unordered, PointNet leverages a symmetric function, specifically max pooling, to ensure that its output is invariant to the order of the input points. This is crucial for processing point clouds directly without needing to impose an artificial order on the data.
+- **Permutation Invariance**: Given that point clouds are inherently unordered, PointNet leverages a symmetric function, specifically max pooling, to ensure that its output is invariant to the order of the input points. This is crucial for processing point clouds directly without needing to impose an artificial order on the data.
 
-- **3. Local and Global Feature Aggregation**: PointNet captures the intricate details of point clouds by effectively merging local and global features. This allows the network to recognize fine-grained patterns and structures within the data, facilitating accurate segmentation and classification.
+- **Local and Global Feature Aggregation**: PointNet captures the intricate details of point clouds by effectively merging local and global features. This allows the network to recognize fine-grained patterns and structures within the data, facilitating accurate segmentation and classification.
 
-- **4. Efficiency and Scalability**: By directly processing point clouds without the need for complex pre-processing, PointNet achieves high efficiency and scalability. This makes it suitable for handling large-scale point cloud data, which is common in applications such as autonomous driving, robotics, and 3D modeling.
+- **Efficiency and Scalability**: By directly processing point clouds without the need for complex pre-processing, PointNet achieves high efficiency and scalability. This makes it suitable for handling large-scale point cloud data, which is common in applications such as autonomous driving, robotics, and 3D modeling.
 
 The complete architecture can be seen in the following image,
 ![image](https://miro.medium.com/v2/resize:fit:1400/format:webp/1*lFnrIqmV_47iRvQcY3dB7Q.png)
@@ -265,8 +265,6 @@ dales_las/
 
 #### Data-preprocessing
 
-- [ ] **TODO:** Add preprocessing arguments - PAULA
-
 To effectively manage a large dataset, downsampling is necessary. This project segments each sample into 100 sub-divisions using a dedicated script (data_preprocessing.py). This scripts also incorporates options for class balancing and applying randome rotation for data augmentation.
 
 Use the script with the following arguments:
@@ -347,13 +345,47 @@ Once the file is saved with you desired parameters you can run the main script u
 
 #### Visualization
 
-After training, use the visualization functions to analyze the performance:
+After training, use the visualization functions to analyze the performance, the figures will be saved in the directory specified in the config.py file.
+
+List of visualizations:
+- Loss graph
+- Accuracy graph
+- IoU
+- IoU per class
+
+In this segment of the code you can see the anem and location for each plot:
 
 ```
-plot_losses(train_loss, test_loss)
-```
+plot_losses(
+        train_loss,
+        test_loss,
+        save_to_file=os.path.join(
+            output_folder, "loss_plot" + str(NUM_POINTS) + ".png"
+        ),
+    )
+    plot_accuracies(
+        train_acc,
+        test_acc,
+        save_to_file=os.path.join(
+            output_folder, "accuracy_plot" + str(NUM_POINTS) + ".png"
+        ),
+    )
+    plot_IoU(
+        train_iou,
+        test_iou,
+        save_to_file=os.path.join(output_folder, "iou_plot" + str(NUM_POINTS) + ".png"),
+    )
 
-- [ ] **TODO:** Add where the images are saved and which images - PAULA
+    plot_iou_per_class(  # Training IoU plot
+        train_iou_per_class,
+        class_names,
+        phase="Training",
+        save_to_file=os.path.join(
+            output_folder, "iou_train_per_class_plot" + str(NUM_POINTS) + ".png"
+        ),
+    )
+
+```
 
 ### How to evaluate the model
 
