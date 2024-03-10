@@ -358,16 +358,14 @@ def batch_random_rotation_z_axis(points):
 
 
 # --- VISUALIZATION
-def prepare_3d_subplot(ax, points, labels, verbose=True):
+def prepare_3d_subplot(ax, points, labels, verbose=True, top_view=False):
     """
     Prepares a 3D subplot with labeled point cloud data.
-
     Parameters:
     - ax (matplotlib.axes.Axes): The axes object to plot on.
     - points (list of lists): The point cloud data, where each point is represented as [x, y, z].
     - labels (list): The labels for each point in the point cloud.
     - verbose (bool, optional): If True, axis labels are set; otherwise, axis ticks are removed.
-
     Returns:
     - None
     """
@@ -378,11 +376,10 @@ def prepare_3d_subplot(ax, points, labels, verbose=True):
         Z.append(point[2])
     for label in labels:
         L.append(label)
-
-    X = np.array(X)
-    Y = np.array(Y)
-    Z = np.array(Z)
-    L = np.array(L)
+    X = np.array(X).astype(float)
+    Y = np.array(Y).astype(float)
+    Z = np.array(Z).astype(float)
+    L = np.array(L).astype(float)
     cdict = {
         1: "blue",  # Ground
         2: "green",  # Vegetation
@@ -409,11 +406,10 @@ def prepare_3d_subplot(ax, points, labels, verbose=True):
             X[L == classification],
             Y[L == classification],
             Z[L == classification],
-            s=25,
+            s=5 if top_view else 25,
             c=color,
             label = clabel.get(classification, "black")
         )
-
     if verbose:
         ax.set_xlabel("X-axis")
         ax.set_ylabel("Y-axis")
@@ -422,9 +418,11 @@ def prepare_3d_subplot(ax, points, labels, verbose=True):
         ax.set_xticks([])
         ax.set_yticks([])
         ax.set_zticks([])
-
     ax.legend()
-    # ax.view_init(90, 0)
+    if top_view:
+        ax.view_init(90, 0)
+        ax.set_zticks([])
+    
 
 
 def visualize_sample(points, labels, save_to_file = None, phase = None, top_view = False):
