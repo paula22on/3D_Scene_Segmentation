@@ -464,6 +464,16 @@ def visualize_sample_by_path(path):
 
 
 def visualize_100_subsamples(dirpath, start_idx):
+    """
+    Visualizes 100 point cloud samples from CSV files located in a directory, starting from a specified index.
+
+    Parameters:
+    - dirpath (str): Directory path containing the CSV files.
+    - start_idx (int): The starting index to begin visualization.
+
+    Returns:
+    - None
+    """
     samples = []
 
     fig, axes = plt.subplots(10, 10, figsize=(10, 10), subplot_kw={"projection": "3d"})
@@ -481,7 +491,19 @@ def visualize_100_subsamples(dirpath, start_idx):
 
 
 def visualize_100_concatenated_samples(sample_data_path, sample_image_path, filename_no_idx, start_idx):
+    """
+    Concatenates and visualizes 100 point cloud samples from CSV files located in a directory, starting from a specified index.
+    Stores the resulting image into the specified directory.
 
+    Parameters:
+    - sample_data_path (str): Directory path containing the CSV files and output path for the CSV containing concatenated samples.
+    - sample_image_path (str): Directory output path for the PNG resulting image.
+    - filename_no_idx (str): Name of the files without index. Expected to be the same for all 100 files.
+    - start_idx (int): The starting index to begin concatenation.
+    
+    Returns:
+    - None
+    """
     filelist = [f'{sample_data_path}/{filename_no_idx}_{i}.csv' for i in range(start_idx,start_idx+100)]
 
     outpath_csv = f'{sample_data_path}/{filename_no_idx}_{start_idx}_to_{start_idx+100-1}.csv'
