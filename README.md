@@ -93,19 +93,31 @@ In order to prepare the dataset for use with the PointNet architecture, we tailo
 3. **Subsampling.** Given the extensive size of the DALES dataset, direct processing is computationally challenging. To address this, we implement a subsampling strategy, dividing the point cloud into smaller, more manageable regions. This step allows us to maintain a high level of detail while reducing the computational load. The divider parameter controls the granularity of this subdivision, enabling flexibility in the balance between detail and performance.
 4. **Balancing Classes.** Imbalances in the distribution of classes within the dataset can bias the model's training process. To mitigate this, we optionally apply a class balancing step to ensure that each class is equally represented, enhancing the model's ability to generalize across different categories.
 5. **Data Augmentation - Rotation.** To improve the robustness of our model, we introduce variability into the training data through random rotations about the Z-axis. This form of data augmentation simulates a wider variety of scenarios, helping the model learn to recognize structures from different orientations.
-6. **Exporting Processed Data** After preprocessing, the data is exported into CSV files, organized by sample type (train or test) and further divided based on the subsampling strategy. This structured format makes it easy to manage and access the data during training and evaluation phases.
+6. **Exporting Processed Data.** After preprocessing, the data is exported into CSV files, organized by sample type (train or test) and further divided based on the subsampling strategy. This structured format makes it easy to manage and access the data during training and evaluation phases.
 
-### Downsampling
+### Subsampling
 - [ ] **TODO:** Add image of divided tiles
+
+![Original tile image](assets/original_tile_top_left_corner.png)
+
+![Subsampling image](assets/original_subsamples_0_to_4.png)
+
 
 #### Random sampling
 - [ ] **TODO:** Add image of original subsample VS random sample
 
+![Original VS random subsample image](assets/original_vs_random_subsample_0.png)
+
+
 ### Data balancing
 - [ ] **TODO:** Add image of original subsample VS random sample VS balanced sample
 
+![Original VS random VS balanced subsample image](assets/original_vs_random_vs_balanced_subsample_0.png)
+
 ### Data rotation
 - [ ] **TODO:** Add image of balanced sample VS rotated 45 degrees VS rotated 90 degrees
+
+![Original VS rotated subsample image](assets/original_vs_rotated_subsample_0.png)
 
 
 ## Architecture (PointNet)
