@@ -104,7 +104,8 @@ In order to prepare the dataset for use with the PointNet architecture, we tailo
 
 The image below depicts the top view of one of the forty scenes provided by DALES, covering an area of 250 square meters. Each point in the point cloud is colored according to its assigned color as described in the presented table.
 
-![Original tile image](assets/original_tile.png)
+<img src="(https://github.com/paula22on/3D_Scene_Segmentation/assets/55758205/7f791a73-7785-4d94-8953-0f9f3b45c41f)" width="500" alt="cm">
+
 
 We computed the ditribution of points across the complete dataset, for each category, diven the train/tast partition that was present on the original data. 
 ![output](https://github.com/paula22on/3D_Scene_Segmentation/assets/55758205/981c1c15-2723-44de-8cbd-69052bf0a29f)
