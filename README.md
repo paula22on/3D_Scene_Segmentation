@@ -182,8 +182,9 @@ For simpler tasks, such as the classification challenge we undertook with the Sh
 
 ## How to
 
-### Requirements 
-- [ ] **TODO:** Update packages + creation of venv - PAULA
+### Requirements
+Before starting, ensure your system meets the following requirements:
+- [ ] **TODO:** MISSING UPDATED REQUIREMENTS.TXT!!
 - Python 3.8 or later
 - PyTorch 1.7.0 or later
 - Matplotlib
@@ -192,15 +193,59 @@ For simpler tasks, such as the classification challenge we undertook with the Sh
 
 ### Installation
 
-1. Clone this repository to your local machine.
-2. Ensure you have Python 3.8 or later installed.
-3. Install the required Python packages:
+**Step 1: Clone the Repository**
+
+To get started, clone the repository to your local machine using the command: 
 
 ```
-pip install torch torchvision numpy pandas matplotlib tqdm
+git clone https://github.com/paula22on/3D_Scene_Segmentation.git
 ```
 
-4. Navigate to the cloned repository's directory.
+**Step 2: Set Up Python Environment**
+
+Ensure you have Python 3.8 or later installed on your system. You can verify your Python version by running:
+
+```
+python3 --version
+```
+
+If you do not have Python installed, download it from [python.org](https://www.python.org/) and follow the installation instructions for your operating system.
+
+**Step 3: Create a Virtual Environment**
+
+Navigate to the cloned repository directory:
+
+```
+cd <repository>
+```
+
+Create a virtual environment named venv (or any name you prefer) by running:
+
+```
+python -m venv venv
+```
+
+Activate the virtual environment:
+
+- On Windows:
+  
+```
+venv\Scripts\activate
+```
+
+- On macOS/Linux:
+
+```
+source venv/bin/activate
+```
+
+**Step 4: Install Required Packages**
+
+Install all the required packages listed in the requirements.txt file:
+
+```
+pip install -r requirements.txt
+```
 
 ### How to prepare the dataset from scratch
 
