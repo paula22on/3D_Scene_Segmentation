@@ -34,7 +34,6 @@ Advised by Mariona Carós.
     - [Download](#download)
     - [Data-preprocessing](#data-preprocessing)
   - [How to train the model](#how-to-train-the-model)
-    - [Setting the environment in Google Cloud?](#setting-the-environment-in-google-cloud)
     - [Running training scripts](#running-training-scripts)
       - [Customization options](#customization-options)
       - [Visualization](#visualization)
@@ -484,6 +483,7 @@ The evaluation scripts are placed within the `evaluation/` directory. To evaluat
   ```
   evaluation/
     checkpoints-segmentation/
+      segmentation_checkpoint_naive.pth
       segmentation_checkpoint_augmentation.pth
       segmentation_checkpoint_rotated.pth
       segmentation_checkpoint_weighted.pth
@@ -491,10 +491,10 @@ The evaluation scripts are placed within the `evaluation/` directory. To evaluat
 
 4. Each of the four approaches presented corresponds to a checkpoint. We use arguments to evaluate each of the checkpoints, as follows:
 
-  - `--naive`: Path to the directory containing the DALES dataset in .las format.
-  - `--augmentation`: Number used for subsampling the dataset.
-  - `--rotated` (optional): Flag to balance the classes in the dataset.
-  - `--weighted` (optional): Flag to apply random rotation around the Z-axis for the training data.
+  - `--naive`: Evaluation of the naive aproach.
+  - `--augmentation`: Evaluation of a model trained with data balancing and rotation.
+  - `--rotated`: Evaluation trained with a model trained with rotated data.
+  - `--weighted`: Evaluation of a model trained with weighted inverse loss.
 
 5. Navigate to the `evaluation` directory and run the evaluation script with one of these arguments to evaluate the corresponding training scenario.
 
