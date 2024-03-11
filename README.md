@@ -40,6 +40,7 @@ Advised by Mariona Carós.
   - [How to evaluate the model](#how-to-evaluate-the-model)
     - [Running the evaluation scripts](#running-the-evaluation-scripts)
     - [Interpreting the results](#interpreting-the-results)
+- [Cloud Deployment](#cloud)
 - [Conclusions](#conclusions)
 - [Future work](#future-work)
 
@@ -549,19 +550,18 @@ For the scope of this task, we recommend a minimum disk size of 50 GB. This reco
 
 Based on Google Cloud's billing for our VM instance's characteristics, the computational cost has been around $2/hour. Considering the time required to execute each of the tasks, the expected costs for each task are as follows:
 
-- **Data preprocessing (~3 hours) = $6*
+- **Data preprocessing (~3 hours)** = $6*
 
 - **Training and evaluation (~8 hours) = $16**
 
 Therefore, the total cost incurred amounts to:
 
 | Experiment | Tasks involved | Cost |
-| -------- | ----- |
-| Naive approach | Training and evaluation | ~16 $
-| Data balancing + augmentation | Data Preprocessing + Training and eval | ~22 $
-| Inverse weighted loss | Data Preprocessing + Training and eval | ~22 $
-| -------- | ----- | ----- |
-| **Total Cost** |  | **~60$** |
+| -------- | ----- | ------- |
+| Naive approach | Training and evaluation | 16 $
+| Data balancing + augmentation | Data Preprocessing + Training and eval | 22 $
+| Inverse weighted loss | Data Preprocessing + Training and eval | 22 $
+| **Total Cost** || **60$** ||
 
 
 
