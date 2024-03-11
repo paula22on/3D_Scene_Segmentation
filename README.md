@@ -272,6 +272,7 @@ Test Results - Loss: 1.2624, Accuracy: 0.60, IoU: 0.18%
 <img src="https://github.com/paula22on/3D_Scene_Segmentation/assets/55758205/1b3f6a93-b793-4c4b-8d3a-566a3c25a267" width="500" alt="cm">
 
 
+All results and predictions from all phases are available on this [link](https://drive.google.com/drive/folders/1esrmct2cByWRIdMjaQTmPAW4W4oPPDcS?usp=drive_link)
 
 ## How to
 
