@@ -40,7 +40,9 @@ Advised by Mariona Carós.
   - [How to evaluate the model](#how-to-evaluate-the-model)
     - [Running the evaluation scripts](#running-the-evaluation-scripts)
     - [Interpreting the results](#interpreting-the-results)
-- [Cloud Deployment](#cloud)
+- [Cloud Deployment](#cloud-deployment)
+    - [VM Selection and Setup](#vm-selection-and-setup)
+    - [Cost](#cost)
 - [Conclusions](#conclusions)
 - [Future work](#future-work)
 
