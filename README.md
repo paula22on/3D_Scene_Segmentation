@@ -77,15 +77,15 @@ Each point in this dataset has been hand-labeled under 9 different categories:
 
 | Category | Color |
 | -------- | ----- |
-| Ground | 'blue' |
-| Vegetation | 'green' |
-| Power Lines | 'yellow' |
-| Poles | 'pink' |
-| Buildings | 'red' |
-| Fences | 'gray' |
-| Trucks | 'orange' |
-| Cars | 'purple' |
-| Unknown | 'black' |
+| Ground | blue |
+| Vegetation | green |
+| Power Lines | yellow |
+| Poles | pink |
+| Buildings | red |
+| Fences | gray |
+| Trucks | orange |
+| Cars | purple |
+| Unknown | black |
 
 In order to prepare the dataset for use with the PointNet architecture, we tailored a preprocessing pipeline for the DALES dataset, designed to enhance the quality and usability of the dataset, optimizing it for effective training and evaluation of our model. The key steps in this process are the following:
 
@@ -525,6 +525,44 @@ After execution, various plots and 3D point cloud figures get stored within the 
 - `sample_images/`: This directory contains images of original and predicted samples in PNG format. Both the original and predicted samples are presented in two forms:
   - `original_sample_2048points_0.png`: This file contains a normal 3D plot of a sample point cloud.
   - `original_sample_2048points_0_to_99.png`: This file displays a top-view plot, excluding the Z-axis, depicting 100 consecutive samples concatenated across the X-Y area.
+
+
+## Cloud Deployment
+
+This project has been also deployed on Google Cloud Platform (GCP), leveraging the scalability and flexibility of cloud computing to enhance computing time and cost efficiency.
+
+### VM Selection and Setup
+
+We selected a VM configuration with 8 vCPUs and 32 GB of RAM. This configuration aims to reduce bottlenecks that could arise from insufficient memory allocation, as well as cost-time efficiency.
+
+The choice of GPU will have little impact on the computational time for the project tasks, for the following reasons:
+
+- **Data Loading.** The DataLoader’s performance, both in terms of data loading and augmentation speed, primarily depends on CPU. And as we perform data rotations ‘on the fly’, these could mask the performance benefits of faster GPUs.
+
+- **Batch Size.** The batch size chosen for training significantly impacts GPU utilization. A batch size too small may not fully utilize the GPUs’ processing capabilities. To avoid overfitting during training, we have opted not to use a batch size larger than 32.
+
+We have experimented with 3 different GPUs: NVIDIA L4, TESLA P100 and V100, and observed very similar time performances for the same CPU/RAM setup with all three.
+
+For the scope of this task, we recommend a minimum disk size of 50 GB. This recommendation is due to the already large size of the dataset and to allow room to experiment with different combinations of preprocessing (balance and rotation, only balance, etc.) without running out of storage on the cloud machine.
+
+### Cost
+
+Based on Google Cloud's billing for our VM instance's characteristics, the computational cost has been around $2/hour. Considering the time required to execute each of the tasks, the expected costs for each task are as follows:
+
+- **Data preprocessing (~3 hours) = $6*
+
+- **Training and evaluation (~8 hours) = $16**
+
+Therefore, the total cost incurred amounts to:
+
+| Experiment | Tasks involved | Cost |
+| -------- | ----- |
+| Naive approach | Training and evaluation | ~16 $
+| Data balancing + augmentation | Data Preprocessing + Training and eval | ~22 $
+| Inverse weighted loss | Data Preprocessing + Training and eval | ~22 $
+| -------- | ----- | ----- |
+| **Total Cost** |  | **~60$** |
+
 
 
 ## Conclusions
