@@ -23,7 +23,7 @@ Link to Github repository: https://github.com/paula22on/3D_Scene_Segmentation/tr
 - [Results](#results)
   - [Naive approach](#naive-approach)
   - [Data balancing plus Augmentation](#data-balancing-plus-augmentation)
-  - [Inverse Weighted Loss](#third-approach-case-study-3)
+  - [Inverse Weighted Loss](#inverse-weighted-loss)
   - [Final results (best case)](#final-results-best-case)
 - [How to](#how-to)
   - [Requirements](#requirements)
