@@ -21,7 +21,7 @@ Link to Github repository: https://github.com/paula22on/3D_Scene_Segmentation/tr
   - [First test with ShapeNet dataset](#first-test-with-shapenet-dataset)
   - [Layer upsize](#layer-upsize)
 - [Results](#results)
-  - [Naive approach](#first-approach-case-study-1)
+  - [Naive approach](#naive-approach)
   - [Data balancing + Augmentation](#second-approach-case-study-2)
   - [Inverse Weighted Loss](#third-approach-case-study-3)
   - [Final results (best case)](#final-results-best-case)
