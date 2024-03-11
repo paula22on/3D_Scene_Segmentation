@@ -22,7 +22,7 @@ Link to Github repository: https://github.com/paula22on/3D_Scene_Segmentation/tr
   - [Layer upsize](#layer-upsize)
 - [Results](#results)
   - [Naive approach](#naive-approach)
-  - [Data balancing + Augmentation](#second-approach-case-study-2)
+  - [Data balancing + Augmentation](#data-balancing-+-augmentation)
   - [Inverse Weighted Loss](#third-approach-case-study-3)
   - [Final results (best case)](#final-results-best-case)
 - [How to](#how-to)
