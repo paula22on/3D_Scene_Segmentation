@@ -279,12 +279,13 @@ Test Results - Loss: 1.2624, Accuracy: 0.60, IoU: 0.18%
 
 ### Requirements
 Before starting, ensure your system meets the following requirements:
-- [ ] **TODO:** MISSING UPDATED REQUIREMENTS.TXT!!
 - Python 3.8 or later
-- PyTorch 1.7.0 or later
-- Matplotlib
-- Numpy
-- Pandas
+- matplotlib: Version 3.7.5.
+- numpy: Version 1.24.4.
+- pandas: Version 2.0.3.
+- scikit-learn: Version 1.3.2.
+- seaborn: Version 0.13.2.
+- torch: Version 2.2.1.
 
 ### Installation
 
