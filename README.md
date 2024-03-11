@@ -4,6 +4,8 @@ Final project for the 2023-2024 Postgraduate course on Artificial Intelligence w
 
 Advised by Mariona Carós.
 
+Link to Github repository: https://github.com/paula22on/3D_Scene_Segmentation/tree/master
+
 
 ## Table of contents
 
