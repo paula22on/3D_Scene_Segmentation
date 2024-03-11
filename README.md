@@ -483,18 +483,20 @@ The evaluation scripts are placed within the `evaluation/` directory. To evaluat
   ```
   evaluation/
     checkpoints-segmentation/
-      segmentation_checkpoint_naive.pth
-      segmentation_checkpoint_augmentation.pth
+      segmentation_checkpoint_best.pth
       segmentation_checkpoint_rotated.pth
+      segmentation_checkpoint_augmentation.pth
       segmentation_checkpoint_weighted.pth
+      segmentation_checkpoint_naive.pth
   ```
 
 4. Each of the four approaches presented corresponds to a checkpoint. We use arguments to evaluate each of the checkpoints, as follows:
 
-  - `--naive`: Evaluation of the naive aproach.
-  - `--augmentation`: Evaluation of a model trained with data balancing and rotation.
-  - `--rotated`: Evaluation trained with a model trained with rotated data.
+  - `--best`: Evaluation of a model trained with balanced data, data augmentation with sample rotation, and per-epoch sample rotation. Trained during 97 epochs.
+  - `--rotated`: Evaluation of a model trained with balanced data, data augmentation with sample rotation, and per-epoch sample rotation. Trained during 80 epochs.
+  - `--augmentation`: Evaluation of a model trained balanced data and data augmentation with sample rotation.
   - `--weighted`: Evaluation of a model trained with weighted inverse loss.
+  - `--naive`: Evaluation of the naive aproach with no data balancing or augmentation.
 
 5. Navigate to the `evaluation` directory and run the evaluation script with one of these arguments to evaluate the corresponding training scenario.
 
@@ -505,6 +507,8 @@ cd evaluation/
 python3 evaluation.py --rotated
 
 ```
+
+_Note_: The user may need to modify the module when evaluating the `--naive` approach. For this, the checkpoints directory contains an additional file, `naive_model.py` script. Please copy the content of this script into `main.py` and run evaluation as indicated above.
 
 #### Interpreting the results
 
