@@ -22,7 +22,7 @@ Link to Github repository: https://github.com/paula22on/3D_Scene_Segmentation/tr
   - [Layer upsize](#layer-upsize)
 - [Results](#results)
   - [Naive approach](#naive-approach)
-  - [Data balancing + Augmentation](#data-balancing-augmentation)
+  - [Data balancing plus Augmentation](#data-balancing-plus-augmentation)
   - [Inverse Weighted Loss](#third-approach-case-study-3)
   - [Final results (best case)](#final-results-best-case)
 - [How to](#how-to)
@@ -222,7 +222,7 @@ Test Results - Loss: 0.6857, Accuracy: 0.75, IoU: 0.19%. We may consider it to f
 <img src="https://github.com/paula22on/3D_Scene_Segmentation/assets/55758205/207c6b11-f766-43fc-836e-7399f3db2718" width="500" alt="cm">
 <img src="https://github.com/paula22on/3D_Scene_Segmentation/assets/55758205/40960eef-aabb-4383-809a-132321368201" width="500" alt="cm">
 
-### Data balancing + Augmentation 
+### Data balancing plus Augmentation 
 For the next phase, we are using balancing on the original dataset during preprocessing on training data. Also we are augmenting our training data by performing random rotation on the pre-processing module, as it would give us an advantage over more training data.
 We also made re-ajustment on the model architecture, in terms of upsizing the layers of the architecture, in order to be more suitable for our task, as exlained above. Upsizing occurs mostly inside the T-Net layers.
 
